@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bài 2: Lớp học và vị trí đồ vật — Bài tập Bài 2 — luyện tư duy ngữ pháp (tự làm & tự chấm)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.3/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --primary: #ff6b35;
+    --primary-dark: #d9491a;
+    --secondary: #ffd23f;
+    --accent: #ff3d68;
+    --bg: #fff4e6;
+    --card-bg: #fffaf3;
+    --text: #402e28;
+    --muted: #8a6d5e;
+    --correct: #06d6a0;
+    --wrong: #ef476f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+  body {
+    font-family: 'Baloo 2', 'Segoe UI', sans-serif;
+    background: linear-gradient(160deg, var(--bg), #ffe1c2);
+    color: var(--text);
+  }
+  .jp { font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif; }
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: 80%;
+    margin: 0 auto;
+    box-shadow: 0 0 30px rgba(0,0,0,.08);
+  }
+  @media (max-width: 560px) {
+    .app-shell { width: 95%; }
+  }
+  .app-header {
+    flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .app-header h1 { margin: 0; font-size: clamp(16px, 4vw, 22px); font-weight: 800; }
+  .app-header p { margin: 2px 0 0; font-size: 13px; opacity: .9; }
+  .score-badge {
+    background: rgba(255,255,255,.25);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .tab-bar {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px 14px;
+    background: #fff;
+    border-bottom: 3px solid var(--secondary);
+  }
+  .tab-btn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background: #fff4e6;
+    color: var(--text);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .tab-btn:hover { background: #ffe0b8; }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 0 var(--primary-dark);
+  }
+  .content { flex: 1 1 auto; overflow-y: auto; padding: 18px 18px 44px; -webkit-overflow-scrolling: touch; }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadein .25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .panel-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-body { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
+  .panel-questions { flex: 1 1 auto; min-width: 0; }
+  .panel-side {
+    order: -1;
+    flex: 0 0 auto;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .submit-btn {
+    padding: 12px 16px; border-radius: 999px; border: none;
+    background: var(--primary); color: #fff; font-weight: 800; font-size: 15px;
+    font-family: inherit; cursor: pointer;
+  }
+  .submit-btn:disabled { background: #ddd0c5; color: #a89a8d; cursor: not-allowed; }
+  .section-feedback { font-weight: 700; text-align: center; font-size: 16px; min-height: 16px; }
+  .section-feedback.ok { color: var(--correct); }
+  .section-feedback.no { color: var(--wrong); }
+  @media (max-width: 560px) {
+    .submit-btn { flex: 1; }
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    border: 2px solid #ffe8d6;
+  }
+  .q-num {
+    display: inline-block;
+    background: var(--secondary);
+    color: #5a3d00;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .q-num-mini {
+    background: var(--secondary);
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #5a3d00;
+    flex: 0 0 auto;
+  }
+  .jp-q { font-size: 20px; font-weight: 600; }
+  .options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+  button.opt {
+    padding: 10px 18px; border-radius: 12px; border: 2px solid var(--primary);
+    background: #fff; color: var(--text); cursor: pointer; font-size: 18px;
+    font-weight: 600; font-family: inherit; transition: all .15s;
+  }
+  button.opt:hover { background: #fff0e0; transform: translateY(-1px); }
+  button.opt.selected { border-color: var(--accent); background: #fff0e0; box-shadow: 0 0 0 2px rgba(255,61,104,.25) inset; }
+  button.opt.correct { background: var(--correct); color: #fff; border-color: var(--correct); }
+  button.opt.wrong { background: var(--wrong); color: #fff; border-color: var(--wrong); }
+  input[type=text] {
+    padding: 10px 12px; border-radius: 10px; border: 2px solid #ffd7b3;
+    font-size: 18px; font-family: inherit; margin-top: 8px; width: 100%; max-width: 320px;
+    background: #fff;
+  }
+  input[type=text]:focus { outline: none; border-color: var(--primary); }
+  .check-btn, .reveal-btn {
+    margin-top: 10px; padding: 9px 20px; border-radius: 999px; border: none;
+    background: var(--primary); color: #fff; cursor: pointer; font-size: 16px;
+    font-weight: 700; font-family: inherit; display: inline-block;
+  }
+  .reveal-btn { background: #8d6e63; }
+  .feedback { margin-top: 8px; font-size: 16px; font-weight: 700; min-height: 18px; }
+  .feedback.ok { color: var(--correct); }
+  .feedback.no { color: var(--wrong); }
+  .reveal-box { margin-top: 8px; padding: 10px 14px; background: #fff3e0; border-radius: 10px; display: none; font-size: 18px; }
+  .order-tokens { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; justify-content: center; }
+  .order-tokens button {
+    padding: 8px 12px; border-radius: 10px; border: 2px solid var(--primary);
+    background: #fff; cursor: pointer; font-size: 18px; font-family: inherit;
+  }
+  .order-built {
+    min-height: 44px; border: 2px dashed #ffb877; border-radius: 10px; padding: 10px;
+    margin-top: 10px; font-size: 20px; text-align: center; background: #fffdf8;
+  }
+  .passage {
+    white-space: pre-line; font-size: 18px; line-height: 1.9; margin-bottom: 16px;
+    background: #fff; border-radius: 12px; padding: 14px;
+  }
+  .match-wrap { display: flex; gap: 18px; }
+  .match-col { flex: 1 1 260px; min-width: 160px; display: flex; flex-direction: column; gap: 10px; }
+  .match-row {
+    display: flex; align-items: center; gap: 10px; min-height: 48px;
+    border-radius: 12px; padding: 10px 12px; cursor: pointer; user-select: none;
+    border: 2px solid transparent; background: #fff;
+    transition: box-shadow .15s, background .15s, border-color .15s, outline-color .15s;
+  }
+  .match-left .match-row, .match-right .match-row.pill {
+    background: #fff; border-style: dashed; border-color: #ffb877; color: var(--text);
+  }
+  .match-left .match-row .jp { font-weight: 700; font-size: 19px; line-height: 24px; }
+  .match-right .match-row.pill {
+    font-weight: 700; font-size: 17px; line-height: 24px; justify-content: center;
+  }
+  .match-row:hover { box-shadow: 0 3px 6px rgba(0,0,0,.12); }
+  .match-row.match-selecting {
+    box-shadow: 0 0 0 3px var(--primary), 0 3px 10px rgba(255,107,53,.5) !important;
+    animation: matchPulse 1s ease-in-out infinite;
+  }
+  @keyframes matchPulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--primary), 0 3px 10px rgba(255,107,53,.5); }
+    50% { box-shadow: 0 0 0 5px var(--primary), 0 3px 16px rgba(255,107,53,.75); }
+  }
+  .match-row.match-matched { border-style: solid; font-weight: 700; }
+  .match-pair-0.match-matched { background: #cfe8ff !important; border-color: #3a7bd5 !important; color: #1c4a7a; }
+  .match-pair-1.match-matched { background: #ffe0b2 !important; border-color: #e0932b !important; color: #7a4e00; }
+  .match-pair-2.match-matched { background: #e1d5f7 !important; border-color: #8e5fd1 !important; color: #4b2f80; }
+  .match-pair-3.match-matched { background: #ffd6e8 !important; border-color: #d94a91 !important; color: #7a1f50; }
+  .match-pair-4.match-matched { background: #cdeff3 !important; border-color: #2596a1 !important; color: #0f4d54; }
+  .match-pair-5.match-matched { background: #fff3b0 !important; border-color: #c9a600 !important; color: #5c4b00; }
+  .match-pair-6.match-matched { background: #ffddc2 !important; border-color: #d9701a !important; color: #7a3a00; }
+  .match-pair-7.match-matched { background: #dcd6f5 !important; border-color: #6a5acd !important; color: #322a6b; }
+  .match-row.match-partner-highlight {
+    outline: 3px solid rgba(64,46,40,.45); outline-offset: 2px;
+  }
+  .match-row.match-graded.match-correct { outline: 3px solid var(--correct); outline-offset: 1px; }
+  .match-row.match-graded.match-wrong { outline: 3px solid var(--wrong); outline-offset: 1px; }
+  .match-row.match-graded { cursor: default; }
+  .match-row.match-graded:hover { box-shadow: none; }
+  .dialogue-title { font-weight: 800; margin-bottom: 10px; color: var(--primary-dark); }
+  .bubble-row { display: flex; margin-bottom: 10px; }
+  .bubble-row.b { justify-content: flex-end; }
+  .bubble { max-width: 78%; padding: 10px 14px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+  .bubble-row.a .bubble { background: #ffe4cc; border-bottom-left-radius: 4px; }
+  .bubble-row.b .bubble { background: #ffd6e0; border-bottom-right-radius: 4px; }
+  .bubble .jp { font-size: 19px; font-weight: 600; }
+  .bubble .vi { font-size: 17px; color: var(--muted); margin-top: 4px; display: none; }
+  .bubble .vi.show { display: block; }
+  .reveal-mini {
+    margin-top: 6px; font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    border: none; background: #8d6e63; color: #fff; cursor: pointer; font-family: inherit;
+  }
+  .dir-badge { font-size: 12px; font-weight: 700; color: #c1440e; margin-bottom: 6px; }
+  .empty-hint { text-align: center; color: #a08772; padding: 30px 0; font-size: 18px; }
+
+  .flashcard-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 6px 0 10px; }
+  .fc-direction-toggle {
+    display: flex; gap: 6px; background: #fff; border-radius: 999px; padding: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 2px solid #ffe8d6;
+  }
+  .fc-dir-btn {
+    padding: 8px 16px; border-radius: 999px; border: none; background: transparent;
+    color: var(--muted); font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+    transition: all .2s;
+  }
+  .fc-dir-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 0 var(--primary-dark); }
+  .fc-progress { font-weight: 700; font-size: 13px; color: var(--muted); }
+  .fc-stage { width: 100%; display: flex; justify-content: center; }
+  .flip-card {
+    width: 80%; max-width: 420px; height: 300px; perspective: 1400px; cursor: pointer;
+  }
+  .flip-card-inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform .55s cubic-bezier(.4, .2, .2, 1);
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-card-front, .flip-card-back {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 18px; text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,.12);
+  }
+  .flip-card-front {
+    background: linear-gradient(135deg, #fffaf3, #fff0da);
+    border: 3px solid var(--primary);
+    color: var(--text);
+  }
+  .flip-card-back {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: 3px solid var(--primary-dark);
+    color: #fff;
+    transform: rotateY(180deg);
+  }
+  .fc-word { font-size: clamp(30px, 9vw, 42px); font-weight: 800; }
+  .fc-kanji { font-size: clamp(52px, 15vw, 72px); font-weight: 800; }
+  .fc-reading { font-size: 20px; opacity: .85; font-weight: 600; }
+  .fc-meaning { font-size: clamp(24px, 6.5vw, 32px); font-weight: 700; }
+  .fc-hint { font-size: 13px; color: var(--muted); }
+  .fc-nav { display: flex; gap: 12px; }
+  .fc-btn {
+    padding: 10px 22px; border-radius: 999px; border: none; background: var(--primary);
+    color: #fff; font-family: inherit; font-weight: 800; font-size: 14px; cursor: pointer;
+    box-shadow: 0 3px 0 var(--primary-dark);
+  }
+  .fc-btn:disabled { background: #ddd0c5; color: #a89a8d; box-shadow: none; cursor: not-allowed; }
+  .deck-stage { width: 100%; cursor: pointer; }
+  .deck-stage .card { margin-bottom: 0; }
+  /* ---- Dạng bài tư duy (thêm 2026-09-03) ---- */
+  .situation {
+    background: #fff8e6; border-left: 5px solid var(--primary); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 12px; font-size: 16px; line-height: 1.5; text-align: left;
+  }
+  .situation b { color: var(--primary-dark); }
+  .cloze-turn { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0; text-align: left; flex-wrap: wrap; }
+  .cloze-speaker {
+    flex: 0 0 auto; font-size: 13px; font-weight: 800; color: #fff; background: var(--primary);
+    border-radius: 999px; padding: 3px 10px; margin-top: 4px;
+  }
+  .cloze-line { font-size: 21px; font-weight: 600; line-height: 1.9; }
+  .blank-opts { display: inline-flex; gap: 6px; margin: 0 4px; vertical-align: middle; flex-wrap: wrap; }
+  .blank-opt {
+    border: 2px dashed #c9b8a5; background: #fffdf8; border-radius: 8px; padding: 4px 10px;
+    font-family: inherit; font-size: 18px; font-weight: 700; color: #6b5a48; cursor: pointer;
+  }
+  .blank-opt:hover { background: #fff1d6; }
+  .blank-opt.selected { border-style: solid; border-color: var(--primary); background: #ffe6c2; color: #7a4a00; }
+  .blank-opt.correct { border-style: solid; border-color: var(--correct); background: #d9f2df; color: #1b5e20; }
+  .blank-opt.wrong { border-style: solid; border-color: var(--wrong); background: #ffdede; color: #8e1b1b; text-decoration: line-through; }
+  .token-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+  .token-btn {
+    border: 2px solid #e2d6c6; background: #fff; border-radius: 10px; padding: 8px 14px;
+    font-family: inherit; font-size: 21px; font-weight: 700; color: var(--text); cursor: pointer;
+  }
+  .token-btn:hover { background: #fff3e0; }
+  .token-btn.picked { border-color: var(--primary); background: #ffe6c2; }
+  .token-btn.correct { border-color: var(--correct); background: #d9f2df; }
+  .token-btn.wrong { border-color: var(--wrong); background: #ffdede; }
+  .no-error-btn {
+    border: 2px solid #b9c7d6; background: #f4f8fc; border-radius: 999px; padding: 7px 16px;
+    font-family: inherit; font-size: 15px; font-weight: 800; color: #38536e; cursor: pointer; margin-top: 4px;
+  }
+  .no-error-btn.picked { border-color: var(--primary); background: #ffe6c2; color: #7a4a00; }
+  .no-error-btn.correct { border-color: var(--correct); background: #d9f2df; color: #1b5e20; }
+  .no-error-btn.wrong { border-color: var(--wrong); background: #ffdede; color: #8e1b1b; }
+  .choice-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .choice-opt {
+    border: 2px solid #e2d6c6; background: #fff; border-radius: 12px; padding: 11px 14px;
+    font-family: inherit; font-size: 20px; font-weight: 600; color: var(--text); cursor: pointer; text-align: left;
+  }
+  .choice-opt:hover { background: #fff3e0; }
+  .choice-opt.selected { border-color: var(--primary); background: #ffe6c2; }
+  .choice-opt.correct { border-color: var(--correct); background: #d9f2df; }
+  .choice-opt.wrong { border-color: var(--wrong); background: #ffdede; }
+  .explain-box {
+    display: none; margin-top: 10px; padding: 10px 14px; background: #eef6ff;
+    border-left: 5px solid #5b8fd6; border-radius: 10px; font-size: 15px; line-height: 1.55; text-align: left;
+  }
+  .explain-box.show { display: block; }
+  .explain-box .ex-line { margin: 4px 0; }
+  .explain-box .ex-ok { color: #1b5e20; font-weight: 700; }
+  .explain-box .ex-no { color: #8e1b1b; font-weight: 700; }
+  .level-tag {
+    display: inline-block; font-size: 11px; font-weight: 800; color: #6b5a48; background: #f0e6d8;
+    border-radius: 999px; padding: 2px 9px; margin-left: 6px; vertical-align: middle;
+  }
+  .instruction-line { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; text-align: left; }
+  .given-jp { font-size: 22px; font-weight: 700; margin: 6px 0 10px; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <div>
+      <h1>🎌 Bài 2: Lớp học và vị trí đồ vật</h1>
+      <p>Bài tập Bài 2 — luyện tư duy ngữ pháp (tự làm & tự chấm)</p>
+    </div>
+    <div class="score-badge">⭐ <span id="score-display">0</span>/<span id="score-total">0</span></div>
+  </header>
+  <nav class="tab-bar" id="tab-bar"></nav>
+  <main class="content" id="app"></main>
+</div>
+
+<script src="on-tap-bai-02.data.js"></script>
+
+<script>
+const DATA = window.EXERCISE_DATA;
+let totalScore = 0, totalMax = 0;
+let qCounter = 0;
+
+function bumpMax(n) { totalMax += n; document.getElementById('score-total').textContent = totalMax; }
+function addScore(n) { totalScore += n; document.getElementById('score-display').textContent = totalScore; }
+function nextNum() { qCounter += 1; return qCounter; }
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function burstConfetti(opts) {
+  try {
+    if (window.confetti) confetti(Object.assign({ particleCount: 40, spread: 60, origin: { y: 0.7 } }, opts || {}));
+  } catch (e) {}
+}
+
+function makeController() {
+  const cbs = [];
+  return {
+    onChange(cb) { cbs.push(cb); },
+    notify() { cbs.forEach(cb => cb()); }
+  };
+}
+
+const NO_SUBMIT_TYPES = new Set(['dialogue_practice', 'dialogue_translation', 'translation', 'translation_vi_jp', 'translation_jp_vi', 'vocab_flashcard', 'kanji_flashcard', 'sentence_transform']);
+
+const RENDERERS = {};
+
+RENDERERS.multiple_choice = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div><div class="jp jp-q">' + item.question + '</div><div class="options"></div><div class="feedback"></div>';
+    const optsDiv = div.querySelector('.options');
+    const fb = div.querySelector('.feedback');
+    const rec = { selected: null, buttons: [] };
+    item.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt'; btn.textContent = opt;
+      btn.onclick = () => {
+        rec.selected = i;
+        rec.buttons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ctrl.notify();
+      };
+      rec.buttons.push(btn);
+      optsDiv.appendChild(btn);
+    });
+    state.push({ item, rec, fb });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.rec.selected !== null);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, rec, fb }) => {
+      rec.buttons.forEach(b => b.dataset.done = '1');
+      if (rec.selected === item.answer_index) {
+        rec.buttons[rec.selected].classList.add('correct');
+        fb.textContent = 'Chính xác.'; fb.className = 'feedback ok';
+        addScore(1); correct++;
+      } else {
+        rec.buttons[rec.selected].classList.add('wrong');
+        rec.buttons[item.answer_index].classList.add('correct');
+        fb.textContent = 'Chưa đúng, đáp án đúng đã tô xanh.'; fb.className = 'feedback no';
+      }
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+RENDERERS.fill_blank = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div><div class="jp jp-q">' + item.sentence_with_blank + '</div>' +
+      '<input type="text" placeholder="Điền từ..."/>' +
+      '<div class="feedback"></div>';
+    const input = div.querySelector('input');
+    const fb = div.querySelector('.feedback');
+    input.addEventListener('input', () => ctrl.notify());
+    state.push({ item, input, fb });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.input.value.trim().length > 0);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, input, fb }) => {
+      input.disabled = true;
+      if (input.value.trim() === item.answer) { fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; addScore(1); correct++; }
+      else { fb.textContent = 'Chưa đúng. Đáp án: ' + item.answer; fb.className = 'feedback no'; }
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+RENDERERS.matching = function (section, container) {
+  const ctrl = makeController();
+  const div = document.createElement('div');
+  div.className = 'card';
+  const n = section.items.length;
+  const PAIR_COLORS = 8;
+
+  // order[slot] = original item index whose "right" text is displayed at that slot.
+  const order = shuffle(section.items.map((_, i) => i));
+  // correctSlotForLeft[leftIdx] = the slot index that is the right answer for that left row.
+  const correctSlotForLeft = new Array(n);
+  order.forEach((origIdx, slot) => { correctSlotForLeft[origIdx] = slot; });
+
+  // Current mapping state (both directions kept in sync).
+  const leftToRight = new Array(n).fill(null);
+  const rightToLeft = new Array(n).fill(null);
+  let selected = null; // { col: 'left'|'right', idx: number } or null
+  let graded = false;
+
+  let leftHtml = '';
+  section.items.forEach((item, idx) => {
+    leftHtml += '<div class="match-row" data-left-idx="' + idx + '"><span class="q-num-mini">' + (idx + 1) + '</span><span class="jp">' + item.left + '</span></div>';
+  });
+  let rightHtml = '';
+  order.forEach((origIdx, slot) => {
+    const item = section.items[origIdx];
+    rightHtml += '<div class="match-row pill" data-slot-idx="' + slot + '">' + item.right + '</div>';
+  });
+  div.innerHTML = '<div class="match-wrap">' +
+      '<div class="match-col match-left">' + leftHtml + '</div>' +
+      '<div class="match-col match-right">' + rightHtml + '</div>' +
+    '</div>' +
+    '<div class="feedback"></div>';
+  bumpMax(n);
+
+  const leftRows = [...div.querySelectorAll('.match-left .match-row')];
+  const rightRows = [...div.querySelectorAll('.match-right .match-row')];
+  const fb = div.querySelector('.feedback');
+
+  function clearPairClasses(row) {
+    for (let i = 0; i < PAIR_COLORS; i++) row.classList.remove('match-pair-' + i);
+    row.classList.remove('match-matched', 'match-selecting', 'match-partner-highlight');
+  }
+
+  function render() {
+    // If the active selection already has an existing partner (the "reselecting an
+    // already-matched cell" case), highlight that partner so it's obvious which
+    // item it's currently linked to.
+    let partnerRow = null;
+    if (selected) {
+      if (selected.col === 'left' && leftToRight[selected.idx] !== null) {
+        partnerRow = rightRows[leftToRight[selected.idx]];
+      } else if (selected.col === 'right' && rightToLeft[selected.idx] !== null) {
+        partnerRow = leftRows[rightToLeft[selected.idx]];
+      }
+    }
+    leftRows.forEach((row, idx) => {
+      clearPairClasses(row);
+      if (leftToRight[idx] !== null) {
+        row.classList.add('match-matched', 'match-pair-' + (idx % PAIR_COLORS));
+      }
+      if (selected && selected.col === 'left' && selected.idx === idx) {
+        row.classList.add('match-selecting');
+      }
+      if (row === partnerRow) row.classList.add('match-partner-highlight');
+    });
+    rightRows.forEach((row, slot) => {
+      clearPairClasses(row);
+      const leftIdx = rightToLeft[slot];
+      if (leftIdx !== null) {
+        row.classList.add('match-matched', 'match-pair-' + (leftIdx % PAIR_COLORS));
+      }
+      if (selected && selected.col === 'right' && selected.idx === slot) {
+        row.classList.add('match-selecting');
+      }
+      if (row === partnerRow) row.classList.add('match-partner-highlight');
+    });
+  }
+
+  function selectCell(col, idx) {
+    if (graded) return;
+    if (selected && selected.col === col && selected.idx === idx) {
+      // Re-clicking the same active selection cancels it.
+      selected = null;
+      render();
+      return;
+    }
+    if (selected && selected.col !== col) {
+      // Two different columns selected -> form (or replace) a pairing.
+      const leftIdx = col === 'left' ? idx : selected.idx;
+      const slotIdx = col === 'right' ? idx : selected.idx;
+      if (leftToRight[leftIdx] !== null) rightToLeft[leftToRight[leftIdx]] = null;
+      if (rightToLeft[slotIdx] !== null) leftToRight[rightToLeft[slotIdx]] = null;
+      leftToRight[leftIdx] = slotIdx;
+      rightToLeft[slotIdx] = leftIdx;
+      selected = null;
+      render();
+      ctrl.notify();
+      return;
+    }
+    // Nothing selected yet, or clicking a different cell in the same column:
+    // just move the active selection here. Any existing pairing on this cell
+    // (if it was already matched) stays untouched until a new pairing completes.
+    selected = { col, idx };
+    render();
+  }
+
+  leftRows.forEach((row, idx) => row.addEventListener('click', () => selectCell('left', idx)));
+  rightRows.forEach((row, slot) => row.addEventListener('click', () => selectCell('right', slot)));
+
+  ctrl.isComplete = () => leftToRight.every(v => v !== null);
+  ctrl.grade = () => {
+    graded = true;
+    selected = null;
+    let correct = 0;
+    leftRows.forEach((row, leftIdx) => {
+      const userSlot = leftToRight[leftIdx];
+      const isRight = userSlot === correctSlotForLeft[leftIdx];
+      row.classList.add('match-graded', isRight ? 'match-correct' : 'match-wrong');
+      if (userSlot !== null) rightRows[userSlot].classList.add('match-graded', isRight ? 'match-correct' : 'match-wrong');
+      if (isRight) correct++;
+    });
+    render();
+    addScore(correct);
+    if (correct === n) { fb.textContent = 'Tuyệt vời, đúng hết.'; fb.className = 'feedback ok'; }
+    else { fb.textContent = 'Đúng ' + correct + '/' + n + '.'; fb.className = 'feedback no'; }
+    return { correct, total: n };
+  };
+
+  render();
+  container.appendChild(div);
+  return ctrl;
+};
+
+RENDERERS.sentence_ordering = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div>' +
+      '<div>Sắp xếp thành câu đúng (nghĩa: ' + item.meaning_vi + '):</div>' +
+      '<div class="order-tokens"></div>' +
+      '<div class="order-built"></div>' +
+      '<div><button class="reveal-btn reset-btn">Làm lại</button></div>' +
+      '<div class="feedback"></div>';
+    const tokensDiv = div.querySelector('.order-tokens');
+    const builtDiv = div.querySelector('.order-built');
+    const fb = div.querySelector('.feedback');
+    let built = [];
+    function renderTokens() {
+      tokensDiv.innerHTML = '';
+      shuffle(item.tokens).forEach(tok => {
+        const btn = document.createElement('button');
+        btn.textContent = tok;
+        btn.onclick = () => {
+          if (btn.dataset.used) return;
+          btn.dataset.used = '1';
+          btn.style.visibility = 'hidden';
+          built.push(tok);
+          builtDiv.textContent = built.join('');
+          ctrl.notify();
+        };
+        tokensDiv.appendChild(btn);
+      });
+    }
+    renderTokens();
+    div.querySelector('.reset-btn').onclick = () => { built = []; builtDiv.textContent = ''; renderTokens(); ctrl.notify(); };
+    state.push({ item, getBuilt: () => built, fb });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.getBuilt().length === s.item.tokens.length);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, getBuilt, fb }) => {
+      if (getBuilt().join('') === item.tokens.join('')) { fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; addScore(1); correct++; }
+      else { fb.textContent = 'Chưa đúng. Câu đúng: ' + item.tokens.join(''); fb.className = 'feedback no'; }
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+RENDERERS.reading_comprehension = function (section, container) {
+  const ctrl = makeController();
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = '<div class="passage jp">' + section.passage + '</div>';
+  const state = [];
+  section.questions.forEach(q => {
+    bumpMax(1);
+    const n = nextNum();
+    const qDiv = document.createElement('div');
+    qDiv.className = 'card';
+    qDiv.innerHTML = '<div class="q-num">Câu ' + n + '</div><div class="jp jp-q">' + q.question + '</div><div class="options"></div><div class="feedback"></div>';
+    const optsDiv = qDiv.querySelector('.options');
+    const fb = qDiv.querySelector('.feedback');
+    const rec = { selected: null, buttons: [] };
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt'; btn.textContent = opt;
+      btn.onclick = () => {
+        rec.selected = i;
+        rec.buttons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ctrl.notify();
+      };
+      rec.buttons.push(btn);
+      optsDiv.appendChild(btn);
+    });
+    state.push({ q, rec, fb });
+    div.appendChild(qDiv);
+  });
+  ctrl.isComplete = () => state.every(s => s.rec.selected !== null);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ q, rec, fb }) => {
+      rec.buttons.forEach(b => b.dataset.done = '1');
+      if (rec.selected === q.answer_index) {
+        rec.buttons[rec.selected].classList.add('correct');
+        fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; addScore(1); correct++;
+      } else {
+        rec.buttons[rec.selected].classList.add('wrong');
+        rec.buttons[q.answer_index].classList.add('correct');
+        fb.textContent = 'Chưa đúng.'; fb.className = 'feedback no';
+      }
+    });
+    return { correct, total: state.length };
+  };
+  container.appendChild(div);
+  return ctrl;
+};
+
+function renderTranslationReviewCard(item) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  const isJpToVi = item.direction === 'jp-vi';
+  const dirLabel = isJpToVi ? 'Nhật sang Việt' : 'Việt sang Nhật';
+  const promptClass = isJpToVi ? 'jp jp-q' : 'jp-q';
+  div.innerHTML = '<div class="dir-badge">' + dirLabel + '</div>' +
+    '<div class="' + promptClass + '">' + item.prompt + '</div>';
+  return div;
+}
+
+RENDERERS.translation = function (section, container) {
+  const isReview = DATA.mode === 'review';
+  if (isReview) {
+    makeDeckPager(container, section.items, renderTranslationReviewCard, '👆 Chạm vào đây hoặc bấm "Tiếp" để sang câu tiếp theo');
+    return;
+  }
+  section.items.forEach(item => {
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    const isJpToVi = item.direction === 'jp-vi';
+    const dirLabel = isJpToVi ? 'Nhật sang Việt' : 'Việt sang Nhật';
+    const promptClass = isJpToVi ? 'jp jp-q' : 'jp-q';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div>' +
+      '<div class="dir-badge">' + dirLabel + '</div>' +
+      '<div class="' + promptClass + '">' + item.prompt + '</div>' +
+      '<input type="text" placeholder="Nhập bản dịch của bạn..."/>' +
+      '<div><button class="reveal-btn">Xem đáp án gợi ý</button></div>' +
+      '<div class="reveal-box"></div>';
+    const btn = div.querySelector('.reveal-btn');
+    const box = div.querySelector('.reveal-box');
+    btn.onclick = () => {
+      box.style.display = 'block';
+      let h = '<div><b>Đáp án gợi ý:</b> ' + item.suggested_answer + '</div>';
+      if (item.common_mistake) h += '<div style="margin-top:6px;color:#8e1b1b;"><b>Lỗi hay gặp:</b> ' + item.common_mistake + '</div>';
+      box.innerHTML = h;
+    };
+    container.appendChild(div);
+  });
+};
+
+RENDERERS.translation_vi_jp = RENDERERS.translation;
+RENDERERS.translation_jp_vi = RENDERERS.translation;
+
+RENDERERS.missing_letters = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div>' +
+      '<div class="jp jp-q" style="letter-spacing:2px;font-size:24px;">' + item.masked + '</div>' +
+      '<input type="text" placeholder="Điền cả từ đầy đủ"/>' +
+      '<div class="feedback"></div>';
+    const input = div.querySelector('input');
+    const fb = div.querySelector('.feedback');
+    input.addEventListener('input', () => ctrl.notify());
+    state.push({ item, input, fb });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.input.value.trim().length > 0);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, input, fb }) => {
+      input.disabled = true;
+      if (input.value.trim() === item.answer) { fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; addScore(1); correct++; }
+      else { fb.textContent = 'Chưa đúng. Đáp án: ' + item.answer; fb.className = 'feedback no'; }
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+function buildFlashcardShell(hasDirectionToggle, hintText) {
+  const wrap = document.createElement('div');
+  wrap.className = 'flashcard-wrap';
+  wrap.innerHTML =
+    (hasDirectionToggle ? (
+      '<div class="fc-direction-toggle">' +
+        '<button class="fc-dir-btn active" data-dir="jp-vi">🇯🇵→🇻🇳 Nhật - Việt</button>' +
+        '<button class="fc-dir-btn" data-dir="vi-jp">🇻🇳→🇯🇵 Việt - Nhật</button>' +
+      '</div>'
+    ) : '') +
+    '<div class="fc-progress">Thẻ <span class="fc-idx"></span>/<span class="fc-total"></span></div>' +
+    '<div class="fc-stage"><div class="flip-card"><div class="flip-card-inner">' +
+      '<div class="flip-card-front"></div><div class="flip-card-back"></div>' +
+    '</div></div></div>' +
+    '<div class="fc-hint">' + hintText + '</div>' +
+    '<div class="fc-nav"><button class="fc-btn fc-prev">← Lùi</button><button class="fc-btn fc-next">Tiếp →</button></div>';
+  return wrap;
+}
+
+function buildDeckShell(hintText) {
+  const wrap = document.createElement('div');
+  wrap.className = 'flashcard-wrap';
+  wrap.innerHTML =
+    '<div class="fc-progress">Mục <span class="fc-idx"></span>/<span class="fc-total"></span></div>' +
+    '<div class="deck-stage"></div>' +
+    '<div class="fc-hint">' + hintText + '</div>' +
+    '<div class="fc-nav"><button class="fc-btn fc-prev">← Lùi</button><button class="fc-btn fc-next">Tiếp →</button></div>';
+  return wrap;
+}
+
+// Hien thi tung item mot (nhu flashcard) + nut tien/lui, dung cho cac dang bai
+// khong co "mat truoc/mat sau" rieng (luyen dich, hoi thoai) o che do on tap.
+// renderItem(item, idx) phai tra ve 1 DOM node cho item do. Nhan click vao vung
+// "san khau" (deck-stage) se chuyen sang item tiep theo, TRU khi click trung
+// dung 1 nut/input ben trong (vd nut "Xem nghia") de khong chan tuong tac do.
+function makeDeckPager(container, items, renderItem, hintText) {
+  if (!items.length) { container.innerHTML = '<p class="empty-hint">(Chưa có nội dung nào cho phần này.)</p>'; return; }
+  const wrap = buildDeckShell(hintText);
+  container.appendChild(wrap);
+  const idxSpan = wrap.querySelector('.fc-idx');
+  const totalSpan = wrap.querySelector('.fc-total');
+  const stage = wrap.querySelector('.deck-stage');
+  const prevBtn = wrap.querySelector('.fc-prev');
+  const nextBtn = wrap.querySelector('.fc-next');
+  totalSpan.textContent = items.length;
+  let idx = 0;
+
+  function render() {
+    idxSpan.textContent = idx + 1;
+    stage.innerHTML = '';
+    stage.appendChild(renderItem(items[idx], idx));
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === items.length - 1;
+  }
+  function goNext() { if (idx < items.length - 1) { idx++; render(); } }
+  function goPrev() { if (idx > 0) { idx--; render(); } }
+
+  prevBtn.onclick = goPrev;
+  nextBtn.onclick = goNext;
+  stage.addEventListener('click', (e) => {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    goNext();
+  });
+
+  render();
+}
+
+RENDERERS.vocab_flashcard = function (section, container) {
+  const items = section.items;
+  if (!items.length) { container.innerHTML = '<p class="empty-hint">(Chưa có từ vựng nào cho flashcard.)</p>'; return; }
+  let idx = 0;
+  let direction = 'jp-vi';
+  let flipped = false;
+
+  const wrap = buildFlashcardShell(true, '👆 Chạm vào thẻ để lật mặt');
+  container.appendChild(wrap);
+
+  const dirBtns = [...wrap.querySelectorAll('.fc-dir-btn')];
+  const idxSpan = wrap.querySelector('.fc-idx');
+  const totalSpan = wrap.querySelector('.fc-total');
+  const card = wrap.querySelector('.flip-card');
+  const front = wrap.querySelector('.flip-card-front');
+  const back = wrap.querySelector('.flip-card-back');
+  const prevBtn = wrap.querySelector('.fc-prev');
+  const nextBtn = wrap.querySelector('.fc-next');
+  totalSpan.textContent = items.length;
+
+  function faceHtml(item) {
+    return '<div class="fc-word jp">' + item.word + '</div>' +
+      (item.reading && item.reading !== item.word ? '<div class="fc-reading jp">' + item.reading + '</div>' : '');
+  }
+
+  function renderCard() {
+    flipped = false;
+    card.classList.remove('flipped');
+    const item = items[idx];
+    idxSpan.textContent = idx + 1;
+    const jpHtml = faceHtml(item);
+    const viHtml = '<div class="fc-meaning">' + item.meaning_vi + '</div>';
+    if (direction === 'jp-vi') { front.innerHTML = jpHtml; back.innerHTML = viHtml; }
+    else { front.innerHTML = viHtml; back.innerHTML = jpHtml; }
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === items.length - 1;
+  }
+
+  dirBtns.forEach(btn => {
+    btn.onclick = () => {
+      direction = btn.dataset.dir;
+      dirBtns.forEach(b => b.classList.toggle('active', b === btn));
+      renderCard();
+    };
+  });
+
+  card.onclick = () => { flipped = !flipped; card.classList.toggle('flipped', flipped); };
+  prevBtn.onclick = () => { if (idx > 0) { idx--; renderCard(); } };
+  nextBtn.onclick = () => { if (idx < items.length - 1) { idx++; renderCard(); } };
+
+  renderCard();
+};
+
+RENDERERS.kanji_flashcard = function (section, container) {
+  const items = section.items;
+  if (!items.length) { container.innerHTML = '<p class="empty-hint">(Chưa có kanji nào cho flashcard.)</p>'; return; }
+  let idx = 0;
+  let flipped = false;
+
+  const wrap = buildFlashcardShell(false, '👆 Chạm vào thẻ để xem cách đọc');
+  container.appendChild(wrap);
+
+  const idxSpan = wrap.querySelector('.fc-idx');
+  const totalSpan = wrap.querySelector('.fc-total');
+  const card = wrap.querySelector('.flip-card');
+  const front = wrap.querySelector('.flip-card-front');
+  const back = wrap.querySelector('.flip-card-back');
+  const prevBtn = wrap.querySelector('.fc-prev');
+  const nextBtn = wrap.querySelector('.fc-next');
+  totalSpan.textContent = items.length;
+
+  function renderCard() {
+    flipped = false;
+    card.classList.remove('flipped');
+    const item = items[idx];
+    idxSpan.textContent = idx + 1;
+    front.innerHTML = '<div class="fc-kanji jp">' + item.kanji + '</div>';
+    back.innerHTML = '<div class="fc-reading jp">' + item.hiragana + '</div>' +
+      (item.meaning_vi ? '<div class="fc-meaning">' + item.meaning_vi + '</div>' : '');
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === items.length - 1;
+  }
+
+  card.onclick = () => { flipped = !flipped; card.classList.toggle('flipped', flipped); };
+  prevBtn.onclick = () => { if (idx > 0) { idx--; renderCard(); } };
+  nextBtn.onclick = () => { if (idx < items.length - 1) { idx++; renderCard(); } };
+
+  renderCard();
+};
+
+RENDERERS.kanji_to_hiragana = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + '</div>' +
+      '<div class="jp jp-q" style="font-size:28px;">' + item.kanji + '</div>' +
+      '<input type="text" placeholder="Nhập hiragana..."/>' +
+      '<div class="feedback"></div>';
+    const input = div.querySelector('input');
+    const fb = div.querySelector('.feedback');
+    input.addEventListener('input', () => ctrl.notify());
+    state.push({ item, input, fb });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.input.value.trim().length > 0);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, input, fb }) => {
+      input.disabled = true;
+      if (input.value.trim() === item.hiragana) { fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; addScore(1); correct++; }
+      else { fb.textContent = 'Chưa đúng. Đáp án: ' + item.hiragana; fb.className = 'feedback no'; }
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+function renderDialoguePracticeCard(dlg, indexLabel) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = (indexLabel ? '<div class="q-num">' + indexLabel + '</div>' : '') +
+    '<div class="dialogue-title">' + (dlg.title_vi || '') + '</div>';
+  (dlg.turns || []).forEach(turn => {
+    const row = document.createElement('div');
+    row.className = 'bubble-row ' + (turn.speaker === 'A' ? 'a' : 'b');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = '<div class="jp">' + turn.jp + '</div><div class="vi">' + turn.vi + '</div><button class="reveal-mini">Xem nghĩa</button>';
+    const viDiv = bubble.querySelector('.vi');
+    const miniBtn = bubble.querySelector('.reveal-mini');
+    miniBtn.onclick = () => {
+      viDiv.classList.toggle('show');
+      miniBtn.textContent = viDiv.classList.contains('show') ? 'Ẩn nghĩa' : 'Xem nghĩa';
+    };
+    row.appendChild(bubble);
+    div.appendChild(row);
+  });
+  return div;
+}
+
+RENDERERS.dialogue_practice = function (section, container) {
+  const isReview = DATA.mode === 'review';
+  if (isReview) {
+    makeDeckPager(container, section.items, (dlg) => renderDialoguePracticeCard(dlg, null),
+      '👆 Bấm "Xem nghĩa" để xem từng câu, chạm nền hoặc bấm "Tiếp" để sang hội thoại tiếp theo');
+    return;
+  }
+  section.items.forEach((dlg, idx) => {
+    container.appendChild(renderDialoguePracticeCard(dlg, 'Hội thoại ' + (idx + 1)));
+  });
+};
+
+function renderDialogueTranslationCard(dlg, indexLabel, isReview) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = (indexLabel ? '<div class="q-num">' + indexLabel + '</div>' : '') +
+    '<div class="dialogue-title">' + (dlg.title_vi || '') + '</div>';
+  (dlg.turns || []).forEach(turn => {
+    const row = document.createElement('div');
+    row.className = 'bubble-row ' + (turn.speaker === 'A' ? 'a' : 'b');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    if (isReview) {
+      bubble.innerHTML = '<div class="vi">' + turn.vi + '</div>';
+    } else {
+      bubble.innerHTML = '<div class="vi">' + turn.vi + '</div>' +
+        '<input type="text" placeholder="Nhập bản dịch tiếng Nhật của bạn..."/>' +
+        '<div><button class="reveal-mini">Xem đáp án gợi ý</button></div>' +
+        '<div class="reveal-box"></div>';
+      const revealBtn = bubble.querySelector('.reveal-mini');
+      const box = bubble.querySelector('.reveal-box');
+      revealBtn.onclick = () => {
+        box.style.display = 'block';
+        box.innerHTML = '<span class="jp">Gợi ý: ' + turn.jp + '</span>';
+      };
+    }
+    const viDiv = bubble.querySelector('.vi');
+    viDiv.classList.add('show');
+    row.appendChild(bubble);
+    div.appendChild(row);
+  });
+  return div;
+}
+
+RENDERERS.dialogue_translation = function (section, container) {
+  const isReview = DATA.mode === 'review';
+  if (isReview) {
+    makeDeckPager(container, section.items, (dlg) => renderDialogueTranslationCard(dlg, null, true),
+      '👆 Chạm nền hoặc bấm "Tiếp" để sang hội thoại tiếp theo');
+    return;
+  }
+  section.items.forEach((dlg, idx) => {
+    container.appendChild(renderDialogueTranslationCard(dlg, 'Hội thoại ' + (idx + 1), false));
+  });
+};
+
+// ===========================================================================
+// Cac dang bai LUYEN TU DUY (them 2026-09-03) — du lieu lay tu
+// lessons/bai-XX/bai-XX.exercises.json. Diem chung: sau khi cham diem, moi cau
+// deu hien 1 "explain-box" giai thich vi sao dung/sai (day la phan giup hoc
+// sinh hieu sau, khong chi biet dap an).
+// ===========================================================================
+
+function levelTag(level) {
+  return level ? '<span class="level-tag">Mức ' + level + '</span>' : '';
+}
+
+// --- 1. situation_cloze: tinh huong tieng Viet + chon tu dien vao cho trong --
+RENDERERS.situation_cloze = function (section, container) {
+  const ctrl = makeController();
+  const cards = [];
+  section.items.forEach(item => {
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + levelTag(item.level) + '</div>' +
+      '<div class="situation"><b>Tình huống:</b> ' + item.situation_vi + '</div>' +
+      '<div class="cloze-turns"></div>' +
+      '<div class="feedback"></div><div class="explain-box"></div>';
+    const turnsDiv = div.querySelector('.cloze-turns');
+    const blanks = [];
+    (item.turns || []).forEach(turn => {
+      const row = document.createElement('div');
+      row.className = 'cloze-turn';
+      if (turn.speaker) {
+        const sp = document.createElement('span');
+        sp.className = 'cloze-speaker';
+        sp.textContent = turn.speaker;
+        row.appendChild(sp);
+      }
+      const line = document.createElement('span');
+      line.className = 'cloze-line jp';
+      (turn.segments || []).forEach(seg => {
+        if (seg.text !== undefined) {
+          const s = document.createElement('span');
+          s.textContent = seg.text;
+          line.appendChild(s);
+        } else if (seg.blank) {
+          bumpMax(1);
+          const wrap = document.createElement('span');
+          wrap.className = 'blank-opts';
+          const rec = { blank: seg.blank, selected: null, buttons: [] };
+          (seg.blank.options || []).forEach((opt, i) => {
+            const b = document.createElement('button');
+            b.className = 'blank-opt';
+            b.textContent = opt;
+            b.onclick = () => {
+              if (b.dataset.done) return;
+              rec.selected = i;
+              rec.buttons.forEach(x => x.classList.remove('selected'));
+              b.classList.add('selected');
+              ctrl.notify();
+            };
+            rec.buttons.push(b);
+            wrap.appendChild(b);
+          });
+          line.appendChild(wrap);
+          blanks.push(rec);
+        }
+      });
+      row.appendChild(line);
+      turnsDiv.appendChild(row);
+    });
+    cards.push({ item, blanks, fb: div.querySelector('.feedback'), exp: div.querySelector('.explain-box') });
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => cards.every(c => c.blanks.every(b => b.selected !== null));
+  ctrl.grade = () => {
+    let correct = 0, total = 0;
+    cards.forEach(({ blanks, fb, exp }) => {
+      let cardOk = 0;
+      let html = '';
+      blanks.forEach(b => {
+        total++;
+        b.buttons.forEach(x => x.dataset.done = '1');
+        const ans = b.blank.answer_index;
+        if (b.selected === ans) {
+          b.buttons[ans].classList.add('correct');
+          cardOk++; correct++; addScore(1);
+          html += '<div class="ex-line"><span class="ex-ok">Đúng (' + b.blank.options[ans] + '):</span> ' + (b.blank.explain || '') + '</div>';
+        } else {
+          if (b.selected !== null) b.buttons[b.selected].classList.add('wrong');
+          b.buttons[ans].classList.add('correct');
+          html += '<div class="ex-line"><span class="ex-no">Đáp án đúng là ' + b.blank.options[ans] + ':</span> ' + (b.blank.explain || '') + '</div>';
+        }
+      });
+      fb.textContent = cardOk === blanks.length ? 'Chính xác.' : 'Đúng ' + cardOk + '/' + blanks.length + ' chỗ trống.';
+      fb.className = 'feedback ' + (cardOk === blanks.length ? 'ok' : 'no');
+      exp.innerHTML = html;
+      exp.classList.add('show');
+    });
+    return { correct, total };
+  };
+  return ctrl;
+};
+
+// --- 2. error_correction: tim tu sai trong cau (hoac ket luan cau dung) ------
+RENDERERS.error_correction = function (section, container) {
+  const ctrl = makeController();
+  const state = [];
+  section.items.forEach(item => {
+    bumpMax(1);
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + levelTag(item.level) + '</div>' +
+      '<div class="situation"><b>Ý muốn nói:</b> ' + item.intent_vi + '</div>' +
+      '<div class="instruction-line">Bấm vào TỪ bị sai trong câu dưới đây:</div>' +
+      '<div class="token-row"></div>' +
+      '<div><button class="no-error-btn">Câu này đúng, không có lỗi</button></div>' +
+      '<div class="feedback"></div><div class="explain-box"></div>';
+    const row = div.querySelector('.token-row');
+    const noErrBtn = div.querySelector('.no-error-btn');
+    const rec = { item, picked: null, buttons: [], noErrBtn, fb: div.querySelector('.feedback'), exp: div.querySelector('.explain-box') };
+    (item.tokens || []).forEach((tok, i) => {
+      const b = document.createElement('button');
+      b.className = 'token-btn jp';
+      b.textContent = tok;
+      b.onclick = () => {
+        if (b.dataset.done) return;
+        rec.picked = i;
+        rec.buttons.forEach(x => x.classList.remove('picked'));
+        noErrBtn.classList.remove('picked');
+        b.classList.add('picked');
+        ctrl.notify();
+      };
+      rec.buttons.push(b);
+      row.appendChild(b);
+    });
+    noErrBtn.onclick = () => {
+      if (noErrBtn.dataset.done) return;
+      rec.picked = -1;
+      rec.buttons.forEach(x => x.classList.remove('picked'));
+      noErrBtn.classList.add('picked');
+      ctrl.notify();
+    };
+    state.push(rec);
+    container.appendChild(div);
+  });
+  ctrl.isComplete = () => state.every(s => s.picked !== null);
+  ctrl.grade = () => {
+    let correct = 0;
+    state.forEach(({ item, picked, buttons, noErrBtn, fb, exp }) => {
+      buttons.forEach(x => x.dataset.done = '1');
+      noErrBtn.dataset.done = '1';
+      const target = item.error_index;
+      const ok = picked === target;
+      if (picked === -1) noErrBtn.classList.add(ok ? 'correct' : 'wrong');
+      else buttons[picked].classList.add(ok ? 'correct' : 'wrong');
+      if (!ok) {
+        if (target === -1) noErrBtn.classList.add('correct');
+        else buttons[target].classList.add('correct');
+      }
+      if (ok) { correct++; addScore(1); fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; }
+      else { fb.textContent = 'Chưa đúng.'; fb.className = 'feedback no'; }
+      let html = '';
+      if (item.error_type) html += '<div class="ex-line"><b>Loại lỗi:</b> ' + item.error_type + '</div>';
+      if (item.correct_sentence) html += '<div class="ex-line"><b>Câu đúng:</b> <span class="jp">' + item.correct_sentence + '</span></div>';
+      if (item.explain) html += '<div class="ex-line">' + item.explain + '</div>';
+      exp.innerHTML = html;
+      exp.classList.add('show');
+    });
+    return { correct, total: state.length };
+  };
+  return ctrl;
+};
+
+// --- 3+4. chon 1 cau dung trong nhieu cau (grammar_judgment /
+//          dialogue_response) — moi lua chon co loi giai thich rieng ----------
+function buildExplainedChoiceRenderer(promptHtmlFn) {
+  return function (section, container) {
+    const ctrl = makeController();
+    const state = [];
+    section.items.forEach(item => {
+      bumpMax(1);
+      const n = nextNum();
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = '<div class="q-num">Câu ' + n + levelTag(item.level) + '</div>' +
+        promptHtmlFn(item) +
+        '<div class="choice-list"></div>' +
+        '<div class="feedback"></div><div class="explain-box"></div>';
+      const list = div.querySelector('.choice-list');
+      // Xao tron thu tu lua chon moi lan mo trang: dap an dung khong bao gio
+      // co dinh o vi tri A, hoc sinh buoc phai doc het cac cau.
+      const opts = shuffle(item.options || []);
+      const rec = { item, opts, selected: null, buttons: [], fb: div.querySelector('.feedback'), exp: div.querySelector('.explain-box') };
+      opts.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'choice-opt jp';
+        b.textContent = opt.jp;
+        b.onclick = () => {
+          if (b.dataset.done) return;
+          rec.selected = i;
+          rec.buttons.forEach(x => x.classList.remove('selected'));
+          b.classList.add('selected');
+          ctrl.notify();
+        };
+        rec.buttons.push(b);
+        list.appendChild(b);
+      });
+      state.push(rec);
+      container.appendChild(div);
+    });
+    ctrl.isComplete = () => state.every(s => s.selected !== null);
+    ctrl.grade = () => {
+      let correct = 0;
+      state.forEach(({ item, opts, selected, buttons, fb, exp }) => {
+        buttons.forEach(x => x.dataset.done = '1');
+        const answerIdx = opts.findIndex(o => o.correct);
+        const ok = selected === answerIdx;
+        if (selected !== null) buttons[selected].classList.add(ok ? 'correct' : 'wrong');
+        if (!ok && answerIdx >= 0) buttons[answerIdx].classList.add('correct');
+        if (ok) { correct++; addScore(1); fb.textContent = 'Chính xác.'; fb.className = 'feedback ok'; }
+        else { fb.textContent = 'Chưa đúng, câu đúng đã tô xanh.'; fb.className = 'feedback no'; }
+        let html = '';
+        opts.forEach((o, i) => {
+          const mark = o.correct ? '<span class="ex-ok">Đúng:</span>' : '<span class="ex-no">Sai:</span>';
+          const you = i === selected ? ' <i>(bạn chọn câu này)</i>' : '';
+          html += '<div class="ex-line">' + mark + ' <span class="jp">' + o.jp + '</span>' + you + '<br>' + (o.explain || '') + '</div>';
+        });
+        exp.innerHTML = html;
+        exp.classList.add('show');
+      });
+      return { correct, total: state.length };
+    };
+    return ctrl;
+  };
+}
+
+RENDERERS.grammar_judgment = buildExplainedChoiceRenderer(function (item) {
+  return '<div class="situation"><b>Câu tiếng Việt:</b> ' + item.meaning_vi + '</div>' +
+    '<div class="instruction-line">Câu tiếng Nhật nào diễn đạt ĐÚNG ý trên?</div>';
+});
+
+RENDERERS.dialogue_response = buildExplainedChoiceRenderer(function (item) {
+  return '<div class="situation"><b>Tình huống:</b> ' + item.situation_vi + '</div>' +
+    (item.question_jp ? '<div class="given-jp jp">' + item.question_jp + '</div>' : '') +
+    '<div class="instruction-line">Chọn cách nói phù hợp nhất:</div>';
+});
+
+// --- 5. sentence_transform: bien doi cau (hoc sinh tu viet, tu doi chieu) ----
+RENDERERS.sentence_transform = function (section, container) {
+  section.items.forEach(item => {
+    const n = nextNum();
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = '<div class="q-num">Câu ' + n + levelTag(item.level) + '</div>' +
+      '<div class="instruction-line">Yêu cầu: ' + item.instruction_vi + '</div>' +
+      '<div class="given-jp jp">' + item.given_jp + '</div>' +
+      '<input type="text" placeholder="Viết câu đã biến đổi..."/>' +
+      '<div><button class="reveal-btn">Xem đáp án</button></div>' +
+      '<div class="explain-box"></div>';
+    const btn = div.querySelector('.reveal-btn');
+    const exp = div.querySelector('.explain-box');
+    btn.onclick = () => {
+      let html = '<div class="ex-line"><b>Đáp án:</b> <span class="jp">' + item.answer_jp + '</span></div>';
+      if (item.explain) html += '<div class="ex-line">' + item.explain + '</div>';
+      exp.innerHTML = html;
+      exp.classList.add('show');
+    };
+    if (item.hint) {
+      const hint = document.createElement('div');
+      hint.className = 'fc-hint';
+      hint.textContent = 'Gợi ý: ' + item.hint;
+      div.insertBefore(hint, div.querySelector('input'));
+    }
+    container.appendChild(div);
+  });
+};
+
+const app = document.getElementById('app');
+const tabBar = document.getElementById('tab-bar');
+const panels = [];
+
+if (DATA.sections && DATA.sections.length > 0) {
+  DATA.sections.forEach((section, idx) => {
+    const tabBtn = document.createElement('button');
+    tabBtn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+    tabBtn.title = section.title;
+    tabBtn.innerHTML = '<span>' + (section.icon || '') + '</span><span>Phần ' + (idx + 1) + '</span>';
+    tabBtn.onclick = () => selectTab(idx);
+    tabBar.appendChild(tabBtn);
+
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (idx === 0 ? ' active' : '');
+    const heading = document.createElement('div');
+    heading.className = 'panel-title';
+    heading.innerHTML = (section.icon || '') + ' ' + section.title;
+    panel.appendChild(heading);
+
+    const body = document.createElement('div');
+    body.className = 'panel-body';
+    const qCol = document.createElement('div');
+    qCol.className = 'panel-questions';
+    body.appendChild(qCol);
+
+    qCounter = 0;
+    const renderer = RENDERERS[section.type];
+    let ctrl = null;
+    if (renderer) ctrl = renderer(section, qCol) || null;
+    else qCol.innerHTML = '<p class="empty-hint">(Chưa hỗ trợ dạng bài: ' + section.type + ')</p>';
+
+    panel.appendChild(body);
+
+    if (ctrl && !NO_SUBMIT_TYPES.has(section.type)) {
+      const side = document.createElement('div');
+      side.className = 'panel-side';
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'submit-btn';
+      submitBtn.textContent = 'Trả lời';
+      submitBtn.disabled = !ctrl.isComplete();
+      const sectionFb = document.createElement('div');
+      sectionFb.className = 'section-feedback';
+      side.appendChild(submitBtn);
+      side.appendChild(sectionFb);
+      body.appendChild(side);
+
+      ctrl.onChange(() => { submitBtn.disabled = submitBtn.dataset.done ? true : !ctrl.isComplete(); });
+      submitBtn.onclick = () => {
+        if (submitBtn.dataset.done) return;
+        submitBtn.dataset.done = '1';
+        submitBtn.disabled = true;
+        const result = ctrl.grade();
+        if (result && typeof result.correct === 'number') {
+          sectionFb.textContent = 'Đúng ' + result.correct + '/' + result.total + '.';
+          sectionFb.className = 'section-feedback ' + (result.correct === result.total ? 'ok' : 'no');
+          if (result.correct === result.total) burstConfetti({ particleCount: 90, spread: 100 });
+        }
+      };
+    }
+
+    app.appendChild(panel);
+    panels.push(panel);
+  });
+} else {
+  app.innerHTML = '<p class="empty-hint">Chưa có bài tập nào được bật cho phần này.</p>';
+}
+
+const tabBtns = [...tabBar.children];
+function selectTab(idx) {
+  tabBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+  panels.forEach((p, i) => p.classList.toggle('active', i === idx));
+  app.scrollTop = 0;
+}
+</script>
+</body>
+</html>
