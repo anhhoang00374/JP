@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm tra 15 phút Bài 1–3</title>
+<style>
+/* Bo cuc: 1 cot doc tren dien thoai, the cau hoi xep chong; mau theo bo slide BO (navy + coral) */
+:root{--brand:#1E2761;--brand-text:#1E2761;--on-brand:#fff;--coral:#E24F55;--bg:#FFF8F3;--card:#fff;--line:#EADBD2;--muted:#6B6F80;--text:#23263A;
+ --ok:#1F8A4C;--okbg:#E7F7EE;--no:#C8243A;--nobg:#FDECEE;--soft:#FFF1EA;--sel:#EEF0FA;--l3bg:#FDE7F0;--l3fg:#9A1F55;--shadow:rgba(30,39,97,.08);--scrim:rgba(20,24,50,.45)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--brand:#3A4A9E;--brand-text:#B9C3FF;--on-brand:#fff;--coral:#F2737A;--bg:#14172B;--card:#1E2238;--line:#343A5A;--muted:#A3A8C3;--text:#ECEEFA;
+ --ok:#4CC27E;--okbg:#17382A;--no:#FF7A8A;--nobg:#3E1C25;--soft:#2A2F4A;--sel:#2B3270;--l3bg:#45213A;--l3fg:#F7A8CB;--shadow:rgba(0,0,0,.35);--scrim:rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--brand:#3A4A9E;--brand-text:#B9C3FF;--on-brand:#fff;--coral:#F2737A;--bg:#14172B;--card:#1E2238;--line:#343A5A;--muted:#A3A8C3;--text:#ECEEFA;
+ --ok:#4CC27E;--okbg:#17382A;--no:#FF7A8A;--nobg:#3E1C25;--soft:#2A2F4A;--sel:#2B3270;--l3bg:#45213A;--l3fg:#F7A8CB;--shadow:rgba(0,0,0,.35);--scrim:rgba(0,0,0,.6);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:780px;margin:0 auto;padding-block:16px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--brand);color:var(--on-brand);border-radius:18px;padding:18px 20px;margin-bottom:16px}
+header.top h1{margin:0 0 4px;font-size:22px;text-wrap:balance}
+header.top p{margin:0;opacity:.85;font-size:14px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 4px 14px var(--shadow);padding:18px;margin-bottom:14px;min-width:0}
+.start label{display:block;font-weight:600;margin:10px 0 4px}
+input{background:var(--card);color:var(--text)}
+.start input{width:100%;font-size:17px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px}
+.rules{font-size:14px;color:var(--muted);margin:10px 0 0;padding-left:18px}
+.btn{display:inline-block;border:0;border-radius:12px;padding:12px 22px;font-size:17px;font-weight:700;cursor:pointer;background:var(--coral);color:#fff;font-family:inherit}
+.btn.navy{background:var(--brand);color:var(--on-brand)}
+.btn.ghost{background:var(--card);color:var(--brand-text);border:1.5px solid var(--brand-text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding:8px 0;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.pill{background:var(--brand);color:var(--on-brand);border-radius:999px;padding:6px 14px;font-weight:700;font-variant-numeric:tabular-nums}
+.pill.warn{background:var(--no);color:#fff}
+.pill.light{background:var(--card);color:var(--brand-text);border:1.5px solid var(--line)}
+h2.sec{font-size:18px;color:var(--brand-text);margin:22px 0 10px;padding-left:10px;border-left:5px solid var(--coral);text-wrap:balance}
+.q .head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;font-size:14px;color:var(--muted)}
+.lv{font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--soft);color:var(--brand-text);white-space:nowrap}
+.lv.l3{background:var(--l3bg);color:var(--l3fg)}
+.stem{font-size:21px;white-space:pre-line;margin-bottom:6px;overflow-wrap:anywhere}
+.vi{font-size:14px;color:var(--muted);margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 12px;font-size:19px;cursor:pointer;color:var(--text);font-family:inherit}
+.opt .t{min-width:0;overflow-wrap:anywhere}
+.opt .k{flex:0 0 28px;height:28px;border-radius:50%;background:var(--soft);color:var(--brand-text);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.opt.sel{border-color:var(--brand-text);background:var(--sel)}
+.opt.sel .k{background:var(--brand);color:var(--on-brand)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--no);background:var(--nobg)}
+.mark{font-weight:800;font-size:15px}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--no)}
+.explain{display:none;margin-top:10px;background:var(--soft);border-radius:10px;padding:10px 12px;font-size:15px}
+.reveal .explain{display:block}
+.result .score{font-size:46px;font-weight:800;color:var(--brand-text);margin:4px 0;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.result table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.result td,.result th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+.result td:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.modal{position:fixed;inset:0;background:var(--scrim);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--card);color:var(--text);border-radius:16px;padding:20px;max-width:420px;width:100%}
+textarea{width:100%;background:var(--card);color:var(--text);border:1.5px solid var(--line);border-radius:10px}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+@media (max-width:520px){.stem{font-size:19px}.opt{font-size:17px}.result .score{font-size:38px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><h1 id="t-title"></h1><p id="t-sub"></p></header>
+
+  <!-- MAN HINH BAT DAU -->
+  <section class="card start" id="start">
+    <label for="name">Họ và tên</label><input id="name" autocomplete="off" placeholder="Nguyễn Văn A">
+    <ul class="rules" id="rules"></ul>
+    <div class="row"><button class="btn" id="go">Bắt đầu làm bài</button></div>
+  </section>
+
+  <!-- BAI LAM -->
+  <section id="exam" class="hidden">
+    <div class="bar"><span class="pill" id="timer">15:00</span><span class="pill light" id="prog">0/20</span><button class="btn navy" id="submit">Nộp bài</button></div>
+    <div id="qs"></div>
+  </section>
+
+  <!-- KET QUA -->
+  <section id="result" class="card result hidden">
+    <div class="small" id="r-who"></div>
+    <div class="score" id="r-score"></div>
+    <div id="r-detail"></div>
+    <div class="tablewrap"><table id="r-table"></table></div>
+    <div class="row">
+      <button class="btn ghost" id="review">Xem lại bài làm</button>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="modal"><div class="box"><p id="m-text"></p><div class="row"><button class="btn" id="m-ok">Nộp bài</button><button class="btn ghost" id="m-cancel">Làm tiếp</button></div></div></div>
+
+<script>
+const TEST = {"id": "test15-bai01-03", "title": "Kiểm tra 15 phút Bài 1–3", "subtitle": "Ngữ pháp: の・も・は／が・に／へ・あります／います・こそあど・だれも／なにも・行きます／来ます", "minutes": 15, "points_total": 10, "source_lessons": ["bai-01", "bai-02", "bai-02-1", "bai-03"], "sections": [{"title": "Bài 1. Chọn trợ từ đúng điền vào （　）", "items": [{"id": "1-1", "level": 1, "stem": "これは わたし（　）本です。", "options": ["の", "は", "も", "が"], "answer": "の", "explain": "N1の N2: 'sách CỦA tôi' → わたしの 本 (bài 1).", "review_ref": ["particle:の"]}, {"id": "1-2", "level": 1, "stem": "ナムさんは 生徒です。ランさん（　）生徒です。", "options": ["も", "は", "の", "と"], "answer": "も", "explain": "'Lan CŨNG là học sinh' → も thay cho は (bài 1).", "vi": "(Lan CŨNG là học sinh.)", "review_ref": ["particle:も"]}, {"id": "1-3", "level": 2, "stem": "ほんだなの 上（　）じしょが あります。", "options": ["に", "へ", "が", "の"], "answer": "に", "explain": "Động từ あります (nằm yên ở đâu) → に. へ chỉ đi với động từ di chuyển (行きます／来ます／かえります).", "focus": "F-NI-HE", "review_ref": ["particle:に"]}, {"id": "1-4", "level": 2, "stem": "ランさんは うち（　）かえります。", "options": ["へ", "が", "の", "は"], "answer": "へ", "explain": "かえります là động từ di chuyển → điểm đến dùng へ (đọc là え).", "focus": "F-NI-HE", "review_ref": ["particle:へ"]}]}, {"title": "Bài 2. Chọn từ để hỏi / từ chỉ định đúng", "items": [{"id": "2-1", "level": 1, "stem": "A：（　）は 本ですか。（A cầm quyển sách trên tay）\nB：はい、それは 本です。", "options": ["これ", "この", "ここ", "どれ"], "answer": "これ", "explain": "Vật ở gần người nói, đứng một mình làm chủ ngữ → これ. この phải đi với danh từ; ここ chỉ nơi chốn.", "review_ref": ["qw:どれ"]}, {"id": "2-2", "level": 1, "stem": "A：これから（　）へ 行きますか。\nB：コンビニへ 行きます。", "options": ["どこ", "どれ", "だれ", "なに"], "answer": "どこ", "explain": "Hỏi ĐIỂM ĐẾN → どこへ 行きますか.", "focus": "F-NI-HE", "review_ref": ["qw:どこ", "particle:へ"]}, {"id": "2-3", "level": 2, "stem": "A：この かばんは（　）ですか。\nB：マイさんのです。", "options": ["だれの", "だれ", "どこ", "なん"], "answer": "だれの", "explain": "Câu trả lời 'của Mai' (マイさんの) → hỏi 'của ai' = だれの.", "review_ref": ["qw:だれの"]}, {"id": "2-4", "level": 3, "stem": "A：きょうしつに（　）いますか。\nB：ナムさんと ランさんが います。", "options": ["だれが", "だれは", "だれも", "なにが"], "answer": "だれが", "explain": "Hỏi CÓ AI → だれが います. Từ hỏi làm chủ ngữ đi với が (không は); だれも chỉ dùng trong câu phủ định; なに dùng cho đồ vật/con vật.", "review_ref": ["qw:だれ", "particle:が"]}]}, {"title": "Bài 3. Chọn động từ / cách nói đúng", "items": [{"id": "3-1", "level": 1, "stem": "つくえの 下に ねこが（　）。", "options": ["います", "あります", "行きます", "です"], "answer": "います", "explain": "Con mèo là động vật → います (đồ vật mới dùng あります).", "review_ref": ["trap:あります/います"]}, {"id": "3-2", "level": 2, "stem": "これは えんぴつ（　）。", "options": ["では ありません", "が ありません", "も ありません", "では いません"], "answer": "では ありません", "explain": "'Không PHẢI là N' → Nでは ありません. が ありません = 'không có'.", "vi": "(Cái này KHÔNG PHẢI là bút chì.)", "review_ref": ["trap:では ありません/ありません"]}, {"id": "3-3", "level": 2, "stem": "先生は いま としょしつに（　）。", "options": ["います", "あります", "行きます", "来ます"], "answer": "います", "explain": "Thầy ĐANG Ở thư viện (đứng yên, người) → に います. 行きます／来ます là di chuyển, sai nghĩa.", "vi": "(Bây giờ thầy đang ở thư viện.)", "focus": "F-NI-HE"}, {"id": "3-4", "level": 3, "stem": "（マイさんは うちに います。）\nマイ：ランさんが これから うちへ（　）。", "options": ["来ます", "行きます", "かえります", "います"], "answer": "来ます", "explain": "Mai đang ở nhà, Lan đi VỀ PHÍA chỗ Mai → 来ます. かえります chỉ dùng khi về nhà của chính mình.", "vi": "(Mai nói: Lan sắp đến nhà mình.)"}]}, {"title": "Bài 4. Chọn câu trả lời phù hợp", "items": [{"id": "4-1", "level": 2, "stem": "A：ばいてんは どこに ありますか。", "options": ["しょくどうの となりに あります。", "しょくどうへ 行きます。", "はい、あります。", "ばいてんです。"], "answer": "しょくどうの となりに あります。", "explain": "Hỏi VỊ TRÍ (どこに ありますか) → trả lời vị trí + に あります. Câu hỏi có どこ → không trả lời はい／いいえ.", "focus": "F-NI-HE", "review_ref": ["qw:どこ", "trap:はい/いいえ"]}, {"id": "4-2", "level": 3, "stem": "A：ナムさん、これから どこへ 行きますか。（ナムさんは うちへ かえります）", "options": ["うちへ かえります。", "うちに います。", "いいえ、行きません。", "うちへ 来ます。"], "answer": "うちへ かえります。", "explain": "Hỏi ĐIỂM ĐẾN → trả lời điểm đến; về nhà mình → かえります. うちに います = 'đang ở nhà' (lạc đề).", "focus": "F-NI-HE", "review_ref": ["qw:どこ", "particle:へ"]}, {"id": "4-3", "level": 3, "stem": "A：としょしつに だれが いますか。（としょしつに だれも いません）", "options": ["だれも いません。", "いいえ、いません。", "だれが いません。", "だれも ありません。"], "answer": "だれも いません。", "explain": "Không có AI → だれも いません (も, không が; người → いません). Câu hỏi có だれ → không mở đầu いいえ.", "review_ref": ["qw:だれ", "particle:も"]}, {"id": "4-4", "level": 3, "stem": "A：つくえの 上に なにが ありますか。（つくえの 上に なにも ありません）", "options": ["なにも ありません。", "なにも いません。", "いいえ、ありません。", "なにが ありません。"], "answer": "なにも ありません。", "explain": "Không có GÌ (đồ vật) → なにも ありません. なにも いません là 'không có con vật nào'.", "review_ref": ["qw:なに", "particle:も"]}]}, {"title": "Bài 5. (Nâng cao) Chọn câu tiếng Nhật ĐÚNG với nghĩa tiếng Việt", "items": [{"id": "5-1", "level": 3, "stem": "Cô giáo đang ở đâu?", "options": ["先生は どこに いますか。", "先生は どこに ありますか。", "先生は どこへ いますか。", "先生は どこへ 行きますか。"], "answer": "先生は どこに いますか。", "explain": "Người + đang ở → どこに いますか. あります dùng cho đồ vật; へ không đi với います; どこへ 行きますか là 'đi đâu' (sai nghĩa).", "focus": "F-NI-HE"}, {"id": "5-2", "level": 3, "stem": "Siêu thị ở bên cạnh bệnh viện.", "options": ["スーパーは びょういんの となりに あります。", "スーパーは びょういんの となりへ あります。", "びょういんは スーパーの となりに あります。", "スーパーは びょういんの となりに います。"], "answer": "スーパーは びょういんの となりに あります。", "explain": "Nơi chốn → に あります. へ + あります sai; câu 3 đảo nghĩa (bệnh viện ở cạnh siêu thị); siêu thị không dùng います.", "focus": "F-NI-HE"}, {"id": "5-3", "level": 2, "stem": "Trên bàn có bút chì và cục tẩy.", "options": ["つくえの 上に えんぴつと けしゴムが あります。", "つくえの 上へ えんぴつと けしゴムが あります。", "つくえの 上は えんぴつと けしゴムが います。", "つくえの 上に えんぴつも けしゴムが あります。"], "answer": "つくえの 上に えんぴつと けしゴムが あります。", "explain": "Nơi chốn + に đầu câu, liệt kê bằng と, đồ vật + が あります.", "focus": "F-NI-HE", "review_ref": ["particle:と"]}, {"id": "5-4", "level": 2, "stem": "Cái đồng hồ kia là của ai?", "options": ["あの とけいは だれのですか。", "あれ とけいは だれのですか。", "あの とけいは だれですか。", "あそこ とけいは だれのですか。"], "answer": "あの とけいは だれのですか。", "explain": "Đứng trước danh từ dùng あの (không あれ／あそこ); hỏi 'của ai' cần だれの.", "review_ref": ["qw:だれの"]}]}], "teacher_hash": 2909704911};
+const KEY = "bo-test15:" + TEST.id;
+const $ = (id) => document.getElementById(id);
+const store = { get(){ try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){ return null; } },
+                set(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){} } };
+const LV = {1:"Cơ bản", 2:"Trung bình", 3:"Nâng cao"};
+const ITEMS = TEST.sections.flatMap((s, si) => s.items.map(q => ({...q, si})));
+const PER = TEST.points_total / ITEMS.length;
+let st = store.get() || null;   // {name, cls, start, order:{id:[...]}, ans:{id:opt}, done, end}
+let timerId = null;
+
+function hash(s){ let h=0; for (const c of s) h = (h*31 + c.charCodeAt(0)) >>> 0; return h; }
+function rng(seed){ let t = seed >>> 0; return () => { t = (t + 0x6D2B79F5) >>> 0; let r = Math.imul(t ^ (t >>> 15), 1 | t); r ^= r + Math.imul(r ^ (r >>> 7), 61 | r); return ((r ^ (r >>> 14)) >>> 0) / 4294967296; }; } // mulberry32
+function shuffled(arr, seed){ const a=arr.slice(), r=rng(seed); for (let i=a.length-1;i>0;i--){ const j = Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fmt(sec){ sec=Math.max(0,Math.round(sec)); return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0"); }
+
+$("t-title").textContent = TEST.title; $("t-sub").textContent = TEST.subtitle || "";
+document.title = TEST.title;
+$("rules").innerHTML = [
+  `Thời gian: <b>${TEST.minutes} phút</b> — hết giờ bài tự nộp.`,
+  `${TEST.sections.length} bài, ${ITEMS.length} câu trắc nghiệm, mỗi câu ${PER.toFixed(PER%1?1:0).replace(".", ",")} điểm (tổng ${TEST.points_total} điểm).`,
+  "Chọn 1 đáp án đúng nhất. Có thể đổi đáp án trước khi nộp.",
+  "Nộp bài xong em sẽ thấy điểm và từng câu đúng / sai."].map(t=>`<li>${t}</li>`).join("");
+
+function render(){
+  const box = $("qs"); box.innerHTML = ""; let n = 0;
+  TEST.sections.forEach((s, si) => {
+    const h = document.createElement("h2"); h.className = "sec"; h.textContent = s.title; box.appendChild(h);
+    s.items.forEach(q => {
+      n++;
+      const c = document.createElement("div"); c.className = "card q"; c.id = "q-" + q.id;
+      const order = st.order[q.id];
+      c.innerHTML = `<div class="head"><span>Câu ${n}</span><span class="lv ${q.level===3?"l3":""}">${LV[q.level]||""}</span></div>
+        <div class="stem"></div>${q.vi?'<div class="vi"></div>':""}<div class="opts"></div><div class="explain"></div>`;
+      c.querySelector(".stem").textContent = q.stem;
+      if (q.vi) c.querySelector(".vi").textContent = q.vi;
+      c.querySelector(".explain").textContent = "Đáp án: " + q.answer + " — " + q.explain;
+      const opts = c.querySelector(".opts");
+      order.forEach((o, i) => {
+        const b = document.createElement("button"); b.className = "opt"; b.type = "button";
+        b.innerHTML = `<span class="k">${"ABCD"[i]}</span><span class="t"></span>`; b.querySelector(".t").textContent = o;
+        if (st.ans[q.id] === o) b.classList.add("sel");
+        b.onclick = () => { if (st.done) return; st.ans[q.id] = o; store.set(st);
+          opts.querySelectorAll(".opt").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); progress(); };
+        opts.appendChild(b);
+      });
+      box.appendChild(c);
+    });
+  });
+  progress();
+}
+function progress(){ $("prog").textContent = Object.keys(st.ans).length + "/" + ITEMS.length; }
+function tick(){
+  const left = TEST.minutes*60 - (Date.now() - st.start)/1000;
+  $("timer").textContent = fmt(left); $("timer").classList.toggle("warn", left <= 120);
+  if (left <= 0) finish(true);
+}
+function begin(){
+  const name = $("name").value.trim(), cls = "";
+  if (!name){ $("name").focus(); $("name").style.borderColor = "var(--no)"; return; }
+  const seed = hash(name + cls + Date.now());
+  const order = {}; ITEMS.forEach((q, i) => order[q.id] = shuffled(q.options, seed + i*7919));
+  st = {name, cls, start: Date.now(), order, ans:{}, done:false}; store.set(st); openExam();
+}
+function openExam(){
+  $("start").classList.add("hidden"); $("exam").classList.remove("hidden");
+  render(); tick(); timerId = setInterval(tick, 1000);
+}
+function askSubmit(){
+  const left = ITEMS.length - Object.keys(st.ans).length;
+  $("m-text").textContent = left ? `Em còn ${left} câu chưa làm. Vẫn nộp bài?` : "Em chắc chắn muốn nộp bài?";
+  $("modal").classList.add("on");
+}
+function finish(auto){
+  if (st.done && !auto) return;
+  clearInterval(timerId); $("modal").classList.remove("on");
+  if (!st.done){ st.done = true; st.end = Date.now(); store.set(st); }
+  showResult(auto);
+}
+function grade(){
+  let ok = 0; const per = TEST.sections.map(() => ({ok:0, n:0})); const wrong = [];
+  ITEMS.forEach((q, i) => { per[q.si].n++; if (st.ans[q.id] === q.answer){ ok++; per[q.si].ok++; } else wrong.push(i+1); });
+  return {ok, per, wrong, score: Math.round(ok*PER*100)/100};
+}
+function showResult(auto){
+  const g = grade();
+  $("exam").classList.remove("hidden"); $("result").classList.remove("hidden");
+  document.querySelector(".bar").classList.add("hidden");
+  const mins = Math.min(TEST.minutes*60, Math.round((st.end - st.start)/1000));
+  $("r-who").textContent = `${st.name}${st.cls?" — Lớp "+st.cls:""} · làm trong ${fmt(mins)}${auto && mins>=TEST.minutes*60 ? " (hết giờ)" : ""}`;
+  $("r-score").textContent = String(g.score).replace(".", ",") + " / " + TEST.points_total + " điểm";
+  $("r-detail").textContent = `Đúng ${g.ok}/${ITEMS.length} câu.` + (g.wrong.length ? " Câu sai / bỏ trống: " + g.wrong.join(", ") + "." : " Xuất sắc!");
+  $("r-table").innerHTML = "<tr><th>Phần</th><th>Đúng</th></tr>" + TEST.sections.map((s, i) => `<tr><td>${s.title.replace(/</g,"&lt;")}</td><td>${g.per[i].ok}/${g.per[i].n}</td></tr>`).join("");
+  // danh dau dung/sai tung cau (KHONG hien dap an dung — giao vien se chua)
+  render();
+  ITEMS.forEach(q => {
+    const c = $("q-" + q.id); const right = st.ans[q.id] === q.answer;
+    c.querySelector(".head span").insertAdjacentHTML("beforeend", ` <span class="mark ${right?"ok":"no"}">${right?"✓ Đúng":(st.ans[q.id]?"✗ Sai":"✗ Bỏ trống")}</span>`);
+    c.querySelectorAll(".opt").forEach(b => { if (b.classList.contains("sel")) b.classList.add(right ? "right" : "wrong"); });
+  });
+    window.scrollTo(0, 0); document.querySelector(".wrap").insertBefore($("result"), $("exam"));
+}
+$("go").onclick = begin;
+$("submit").onclick = askSubmit;
+$("m-ok").onclick = () => finish(false);
+$("m-cancel").onclick = () => $("modal").classList.remove("on");
+$("review").onclick = () => $("qs").scrollIntoView({behavior:"smooth"});
+// mo lai trang: tiep tuc bai dang lam / xem lai ket qua
+if (st && st.order){ if (st.done) { $("start").classList.add("hidden"); showResult(false); } else openExam(); }
+</script>
+</body>
+</html>
