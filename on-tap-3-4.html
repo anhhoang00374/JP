@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn tập Bài 3 – Bài 4</title>
+<style>
+:root{--brand:#1E2761;--brand-text:#1E2761;--on-brand:#fff;--coral:#E24F55;--bg:#FFF8F3;--card:#fff;--line:#EADBD2;--muted:#6B6F80;--text:#23263A;
+ --ok:#1F8A4C;--okbg:#E7F7EE;--no:#C8243A;--nobg:#FDECEE;--soft:#FFF1EA;--sel:#EEF0FA;--shadow:rgba(30,39,97,.08);--scrim:rgba(20,24,50,.45)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--brand:#3A4A9E;--brand-text:#B9C3FF;--on-brand:#fff;--coral:#F2737A;--bg:#14172B;--card:#1E2238;--line:#343A5A;--muted:#A3A8C3;--text:#ECEEFA;
+ --ok:#4CC27E;--okbg:#17382A;--no:#FF7A8A;--nobg:#3E1C25;--soft:#2A2F4A;--sel:#2B3270;--shadow:rgba(0,0,0,.35);--scrim:rgba(0,0,0,.6);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:780px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 120px max(16px,env(safe-area-inset-left,0px))}
+header.top{background:var(--brand);color:var(--on-brand);border-radius:18px;padding:18px 20px;margin-bottom:16px}
+header.top h1{margin:0 0 4px;font-size:22px;text-wrap:balance}
+header.top p{margin:0;opacity:.88;font-size:14px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 4px 14px var(--shadow);padding:18px;margin-bottom:14px;min-width:0}
+label.lb{display:block;font-weight:600;margin:0 0 4px}
+input.txt{width:100%;font-size:17px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit}
+.rules{font-size:14px;color:var(--muted);margin:12px 0 0;padding-left:18px}
+.rules li{margin:3px 0}
+.btn{display:inline-block;border:0;border-radius:12px;padding:12px 22px;font-size:17px;font-weight:700;cursor:pointer;background:var(--coral);color:#fff;font-family:inherit}
+.btn.navy{background:var(--brand);color:var(--on-brand)}
+.btn.ghost{background:var(--card);color:var(--brand-text);border:1.5px solid var(--brand-text)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.bar{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 0;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.pill{background:var(--brand);color:var(--on-brand);border-radius:999px;padding:6px 14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill.light{background:var(--card);color:var(--brand-text);border:1.5px solid var(--line)}
+.pill.warn{background:var(--no);color:#fff}
+.bar .btn{padding:8px 18px;font-size:16px}
+h2.sec{font-size:18px;color:var(--brand-text);margin:24px 0 2px;padding-left:10px;border-left:5px solid var(--coral);text-wrap:balance}
+p.hint{margin:0 0 10px 15px;font-size:14px;color:var(--muted)}
+.q .head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;font-size:14px;color:var(--muted)}
+.stem{font-size:21px;white-space:pre-line;margin-bottom:10px;overflow-wrap:anywhere}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 12px;font-size:19px;cursor:pointer;color:var(--text);font-family:inherit}
+.opt .t{min-width:0;overflow-wrap:anywhere}
+.opt .k{flex:0 0 28px;height:28px;border-radius:50%;background:var(--soft);color:var(--brand-text);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.opt.sel{border-color:var(--brand-text);background:var(--sel)}
+.opt.sel .k{background:var(--brand);color:var(--on-brand)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--no);background:var(--nobg)}
+.done .opt{cursor:default}
+.mark{font-weight:800;font-size:15px}
+.mark.ok{color:var(--ok)} .mark.no{color:var(--no)}
+.explain{display:none;margin-top:10px;background:var(--soft);border-radius:10px;padding:10px 12px;font-size:15px}
+.done .explain{display:block}
+.numrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.numshow{font-size:26px;font-weight:700;min-width:120px;font-variant-numeric:tabular-nums}
+.numrow input.kana{flex:1 1 200px;font-size:22px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit}
+.numrow input.kana.right{border-color:var(--ok);background:var(--okbg)}
+.numrow input.kana.wrong{border-color:var(--no);background:var(--nobg)}
+.result .score{font-size:46px;font-weight:800;color:var(--brand-text);margin:4px 0;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.result table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.result td,.result th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+.result td:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.modal{position:fixed;inset:0;background:var(--scrim);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--card);color:var(--text);border-radius:16px;padding:20px;max-width:420px;width:100%}
+textarea{width:100%;background:var(--card);color:var(--text);border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;padding:8px}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+@media (max-width:520px){.stem{font-size:19px}.opt{font-size:17px}.result .score{font-size:38px}.numshow{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><h1 id="t-title"></h1><p id="t-sub"></p></header>
+
+  <section class="card" id="start">
+    <label class="lb" for="name">Họ và tên (không bắt buộc)</label>
+    <input class="txt" id="name" autocomplete="off" placeholder="Nguyễn Văn A">
+    <ul class="rules" id="rules"></ul>
+    <div class="row"><button class="btn" id="go" type="button">Bắt đầu làm bài</button></div>
+  </section>
+
+  <section id="exam" class="hidden">
+    <div class="bar">
+      <span class="pill" id="timer">00:00</span>
+      <span class="pill light" id="prog">0/0</span>
+      <button class="btn navy" id="submit" type="button">Nộp bài</button>
+    </div>
+    <div id="qs"></div>
+  </section>
+
+  <section id="result" class="card result hidden">
+    <div class="small" id="r-who"></div>
+    <div class="score" id="r-score"></div>
+    <div id="r-detail"></div>
+    <div class="tablewrap"><table id="r-table"></table></div>
+    <div class="row">
+      <button class="btn ghost" id="review" type="button">Xem lại từng câu</button>
+      <button class="btn ghost" id="copy" type="button">Sao chép kết quả</button>
+      <button class="btn" id="again" type="button">Làm lại</button>
+    </div>
+    <textarea id="copybox" class="hidden" rows="6" readonly aria-label="Kết quả để sao chép"></textarea>
+  </section>
+</div>
+
+<div class="modal" id="modal"><div class="box"><p id="m-text"></p><div class="row"><button class="btn" id="m-ok" type="button">Nộp bài</button><button class="btn ghost" id="m-cancel" type="button">Làm tiếp</button></div></div></div>
+
+<script>
+const DATA = {"title": "Ôn tập Bài 3 – Bài 4", "subtitle": "Kanji bài 1–4 · Từ vựng · Từ để hỏi bài 1–4 · Ngữ pháp · Nhập số bằng hiragana", "target_minutes": 30, "sections": [{"id": "kanji", "title": "Phần 1. Kanji (bài 1–4)", "hint": "Chọn cách đọc / chữ Hán đúng.", "items": [{"stem": "「先生」", "options": ["せんせい", "せんしょう", "さきせい", "せいせん"], "answer": "せんせい", "explain": "先 đọc せん, 生 đọc せい → 先生 (せんせい) = giáo viên."}, {"stem": "「生徒」", "options": ["せいと", "しょうと", "せんと", "せいど"], "answer": "せいと", "explain": "生 đọc せい (giống trong 先生). 生徒 (せいと) = học sinh."}, {"stem": "つくえの「上」に ほんが あります。\n「上」", "options": ["うえ", "した", "よこ", "うしろ"], "answer": "うえ", "explain": "上 = trên → うえ. (下 = dưới → した)."}, {"stem": "いすの「下」に かばんが あります。\n「下」", "options": ["した", "うえ", "まえ", "よこ"], "answer": "した", "explain": "下 = dưới → した. (上 = trên → うえ)."}, {"stem": "「行きます」", "options": ["いきます", "きます", "こうきます", "かえります"], "answer": "いきます", "explain": "行 đọc い trong 行きます = đi. Đừng nhầm với 来ます (きます) = đến."}, {"stem": "「来ます」", "options": ["きます", "らいます", "くます", "いきます"], "answer": "きます", "explain": "来ます đọc きます (KHÔNG đọc らいます／くます). 来 = đến."}, {"stem": "「三百円」", "options": ["さんびゃくえん", "さんひゃくえん", "さんぴゃくえん", "さんびゃくドン"], "answer": "さんびゃくえん", "explain": "300 = さんびゃく (百 biến âm thành びゃく sau 三), 円 = えん. ドン là tiền Việt, viết bằng katakana."}, {"stem": "「100円」を かんじで かくと？", "options": ["百円", "円百", "来円", "行円"], "answer": "百円", "explain": "百 = 100 (ひゃく), 円 = yên (えん) → 百円 (ひゃくえん). Số lượng đứng trước 円."}]}, {"id": "vocab", "title": "Phần 2. Từ vựng bài 3 – 4", "hint": "Chọn nghĩa đúng của 3 từ, theo đúng thứ tự.", "items": [{"stem": "Chọn nghĩa đúng, theo thứ tự:\nしょくどう ・ ばいてん ・ たいいくかん", "options": ["nhà ăn ・ căng tin ・ nhà thể thao", "nhà ăn ・ nhà thể thao ・ căng tin", "căng tin ・ nhà thể thao ・ nhà ăn", "nhà thể thao ・ căng tin ・ nhà ăn"], "answer": "nhà ăn ・ căng tin ・ nhà thể thao", "explain": "しょくどう = nhà ăn · ばいてん = căng tin (cửa hàng trong trường) · たいいくかん = nhà thể thao.", "mono": false}, {"stem": "Chọn nghĩa đúng, theo thứ tự:\nスーパー ・ いちば ・ コンビニ", "options": ["siêu thị ・ chợ ・ cửa hàng tiện lợi", "siêu thị ・ cửa hàng tiện lợi ・ chợ", "chợ ・ cửa hàng tiện lợi ・ siêu thị", "cửa hàng tiện lợi ・ chợ ・ siêu thị"], "answer": "siêu thị ・ chợ ・ cửa hàng tiện lợi", "explain": "スーパー = siêu thị · いちば = chợ · コンビニ = cửa hàng tiện lợi.", "mono": false}, {"stem": "Chọn nghĩa đúng, theo thứ tự:\nびょういん ・ こうえん ・ カフェ", "options": ["bệnh viện ・ công viên ・ quán cà phê", "bệnh viện ・ quán cà phê ・ công viên", "công viên ・ quán cà phê ・ bệnh viện", "quán cà phê ・ công viên ・ bệnh viện"], "answer": "bệnh viện ・ công viên ・ quán cà phê", "explain": "びょういん = bệnh viện · こうえん = công viên · カフェ = quán cà phê.", "mono": false}, {"stem": "Chọn nghĩa đúng, theo thứ tự:\nパン ・ ケーキ ・ プリン", "options": ["bánh mì ・ bánh kem ・ bánh flan", "bánh mì ・ bánh flan ・ bánh kem", "bánh kem ・ bánh flan ・ bánh mì", "bánh flan ・ bánh kem ・ bánh mì"], "answer": "bánh mì ・ bánh kem ・ bánh flan", "explain": "パン = bánh mì · ケーキ = bánh kem · プリン = bánh flan.", "mono": false}, {"stem": "Chọn nghĩa đúng, theo thứ tự:\nヨーグルト ・ アイスクリーム ・ おかし", "options": ["sữa chua ・ kem ・ bánh kẹo", "sữa chua ・ bánh kẹo ・ kem", "kem ・ bánh kẹo ・ sữa chua", "bánh kẹo ・ kem ・ sữa chua"], "answer": "sữa chua ・ kem ・ bánh kẹo", "explain": "ヨーグルト = sữa chua · アイスクリーム = kem · おかし = bánh kẹo.", "mono": false}, {"stem": "Chọn nghĩa đúng, theo thứ tự:\nコーヒー ・ こうちゃ ・ コーラ", "options": ["cà phê ・ trà ・ nước ngọt cola", "cà phê ・ nước ngọt cola ・ trà", "trà ・ nước ngọt cola ・ cà phê", "nước ngọt cola ・ trà ・ cà phê"], "answer": "cà phê ・ trà ・ nước ngọt cola", "explain": "コーヒー = cà phê · こうちゃ = hồng trà / trà · コーラ = cola.", "mono": false}]}, {"id": "qw", "title": "Phần 3. Từ để hỏi (bài 1 – 4)", "hint": "Chọn từ để hỏi đúng điền vào （　）.", "items": [{"stem": "A：これは（　）ですか。\nB：じしょです。", "options": ["なん", "なに", "だれ", "どれ"], "answer": "なん", "explain": "Hỏi 'cái gì' + です → 何 đọc là なん (なん + です／の). Còn なに đứng trước が／を."}, {"stem": "A：つくえの 上に（　）が ありますか。\nB：ほんが あります。", "options": ["なに", "なん", "だれ", "どこ"], "answer": "なに", "explain": "Hỏi 'có CÁI GÌ' → なにが ありますか (何 đọc なに khi đứng trước が)."}, {"stem": "A：あの ひとは（　）ですか。\nB：わたしの 先生です。", "options": ["だれ", "どれ", "なに", "どこ"], "answer": "だれ", "explain": "Hỏi người → だれ (ai)."}, {"stem": "A：この かばんは（　）ですか。\nB：ナムさんのです。", "options": ["だれの", "だれが", "どの", "どこの"], "answer": "だれの", "explain": "Trả lời 'của Nam' (ナムさんの) → hỏi 'của ai' = だれの."}, {"stem": "A：これから（　）へ 行きますか。\nB：スーパーへ 行きます。", "options": ["どこ", "どれ", "だれ", "いくら"], "answer": "どこ", "explain": "Hỏi ĐIỂM ĐẾN → どこへ 行きますか (không trả lời はい／いいえ)."}, {"stem": "A：がっこうは（　）ですか。（hỏi một cách lịch sự）\nB：ハノイです。", "options": ["どちら", "どれ", "どの", "だれ"], "answer": "どちら", "explain": "どちら = cách hỏi lịch sự của どこ (ở đâu)."}, {"stem": "A：ランさんの ノートは（　）ですか。\nB：それです。", "options": ["どれ", "どの", "どこ", "だれ"], "answer": "どれ", "explain": "どれ = cái nào (chọn 1 trong nhiều vật), đứng một mình, không có danh từ theo sau."}, {"stem": "A：（　）かばんが ナムさんのですか。\nB：あの かばんです。", "options": ["どの", "どれ", "どこ", "どちら"], "answer": "どの", "explain": "Có danh từ ngay sau (かばん) → どの＋N. どれ không đi kèm danh từ."}, {"stem": "A：この おかしは 一つ（　）ですか。\nB：6,000ドンです。", "options": ["いくら", "なんにん", "なんさい", "だれ"], "answer": "いくら", "explain": "Hỏi GIÁ TIỀN → いくら. 一つ いくら = giá 1 cái."}, {"stem": "A：ランさんは（　）ですか。\nB：12さいです。", "options": ["なんさい", "なんにん", "なんじ", "なんようび"], "answer": "なんさい", "explain": "Hỏi tuổi → なんさい (mấy tuổi)."}, {"stem": "Cách hỏi tuổi LỊCH SỰ hơn 「なんさいですか」 là?", "options": ["おいくつですか", "いくらですか", "どちらですか", "なんじですか"], "answer": "おいくつですか", "explain": "おいくつですか = (Ngài/bạn) bao nhiêu tuổi ạ? — lịch sự hơn なんさい."}, {"stem": "A：ナムさんの クラスは（　）ですか。\nB：30にんです。", "options": ["なんにん", "なんさい", "なんじ", "いくら"], "answer": "なんにん", "explain": "Hỏi số NGƯỜI → なんにん (mấy người)."}, {"stem": "A：いま（　）ですか。\nB：8じ 15ふんです。\n（Hỏi: bây giờ là mấy giờ mấy phút?）", "options": ["なんじ なんぷん", "なんにん なんさい", "なんようび なんにち", "なんがつ なんようび"], "answer": "なんじ なんぷん", "explain": "Hỏi giờ → なんじ; hỏi phút → なんぷん."}, {"stem": "A：きょうは（　）ですか。\nB：どようびです。", "options": ["なんようび", "なんじ", "なんにん", "なんさい"], "answer": "なんようび", "explain": "Hỏi THỨ trong tuần → なんようび."}, {"stem": "A：きょうは（　）ですか。\nB：はちがつ じゅうごにちです。\n（Hỏi: hôm nay là ngày mấy tháng mấy?）", "options": ["なんがつ なんにち", "なんじ なんぷん", "なんようび なんさい", "なんにん なんにち"], "answer": "なんがつ なんにち", "explain": "Hỏi tháng → なんがつ; hỏi ngày → なんにち."}]}, {"id": "gram", "title": "Phần 4. Ngữ pháp bài 3 – 4", "hint": "Chọn đáp án đúng nhất.", "items": [{"stem": "（Em đang đứng trong nhà ăn. Căng tin ở xa cả em và người nghe.）\n（１）は しょくどうです。（２）は ばいてんです。", "options": ["（１）ここ　（２）あそこ", "（１）あそこ　（２）ここ", "（１）そこ　（２）あそこ", "（１）ここ　（２）そこ"], "answer": "（１）ここ　（２）あそこ", "explain": "ここ = chỗ gần người nói · そこ = gần người nghe · あそこ = xa cả hai."}, {"stem": "（Bên cạnh siêu thị có cửa hàng tiện lợi.）\nスーパーの（　）コンビニが あります。", "options": ["となりに", "となりへ", "となりを", "となりは"], "answer": "となりに", "explain": "Nơi tồn tại (có/ở) → に ＋ あります. へ chỉ đi với động từ di chuyển."}, {"stem": "（Ở công viên có động vật.）\nこうえんに どうぶつが（　）。", "options": ["います", "あります", "行きます", "来ます"], "answer": "います", "explain": "Người, động vật → います (đồ vật mới dùng あります)."}, {"stem": "A：たいいくかんに だれが いますか。\nB：（Không có ai cả）（　）いません。", "options": ["だれも", "だれが", "なにも", "だれは"], "answer": "だれも", "explain": "だれも ＋ phủ định = không có AI cả. なにも dùng cho đồ vật／con vật."}, {"stem": "A：これから どこへ 行きますか。\nB：いちば（　）行きます。", "options": ["へ", "を", "が", "も"], "answer": "へ", "explain": "へ (đọc là え) chỉ điểm đến của động từ di chuyển 行きます／来ます／かえります."}, {"stem": "（Em đang ở nhà mình. Bạn sắp đến nhà em.）\nともだちが うちへ（　）。", "options": ["来ます", "行きます", "かえります", "います"], "answer": "来ます", "explain": "来ます = tiến về phía chỗ người nói đang đứng. 行きます = đi ra xa chỗ người nói."}, {"stem": "A：あのう、ナムさん、これから どこへ 行きますか。\n（Nam về nhà mình）\nB：では、わたしは うちへ（　）。", "options": ["かえります", "来ます", "います", "あります"], "answer": "かえります", "explain": "かえります = về chỗ của mình (nhà mình, nước mình). あのう = xin lỗi cho hỏi (từ đệm đầu câu); では = vậy thì."}, {"stem": "A：何を のみますか。\nB：ぎゅうにゅう（　）のみます。", "options": ["を", "が", "へ", "に"], "answer": "を", "explain": "を (đọc là お) đứng ngay sau thứ được ăn／uống: ぎゅうにゅうを のみます."}, {"stem": "ジュースを（①）。　プリンを（②）。", "options": ["① のみます　② たべます", "① たべます　② のみます", "① のみます　② のみます", "① たべます　② たべます"], "answer": "① のみます　② たべます", "explain": "Đồ uống → のみます (uống) · đồ ăn → たべます (ăn)."}, {"stem": "Cho tôi 2 cái bánh kem và 3 cốc cà phê.\nCâu nào ĐÚNG?", "options": ["ケーキを 二つと コーヒーを 三つ ください。", "ケーキが 二つと コーヒーが 三つ ください。", "ケーキを 二つ コーヒーを 三つ と ください。", "二つを ケーキと 三つを コーヒー ください。"], "answer": "ケーキを 二つと コーヒーを 三つ ください。", "explain": "Mẫu: Nを [số]と Nを [số] ください. Số lượng đứng SAU を, trước ください; nối 2 món bằng と."}, {"stem": "ナム：これから グループで かいものです。\nてんいん：いらっしゃいませ。\nナム：ジュースを 三つ ください。それから、ぎゅうにゅうを 二つ ください。\nてんいん：はい。おまちください。ぜんぶで 50,000ドンです。\n\n「ぜんぶで 50,000ドンです」の いみは？", "options": ["Tất cả hết 50.000 đồng", "Mỗi cái giá 50.000 đồng", "Đây không phải 50.000 đồng", "Có 50.000 người"], "answer": "Tất cả hết 50.000 đồng", "explain": "ぜんぶで = tất cả (gộp lại). Hỏi: ぜんぶで いくらですか. Hỏi giá 1 cái: 一つ いくらですか."},]}, {"id": "num", "title": "Phần 5. Nhập số bằng hiragana", "hint": "Đọc số rồi gõ bằng hiragana (có thể gõ romaji, trang sẽ tự đổi sang hiragana). Không cần gõ えん／ドン.", "items": [{"show": "300円", "accept": ["さんびゃく"], "explain": "300 = さんびゃく (百 biến âm thành びゃく sau さん). Đọc đầy đủ: さんびゃくえん."}, {"show": "600ドン", "accept": ["ろっぴゃく"], "explain": "600 = ろっぴゃく (ろく → ろっ, 百 → ぴゃく)."}, {"show": "800円", "accept": ["はっぴゃく"], "explain": "800 = はっぴゃく (はち → はっ, 百 → ぴゃく)."}, {"show": "3,000ドン", "accept": ["さんぜん"], "explain": "3.000 = さんぜん (せん biến âm thành ぜん sau さん)."}, {"show": "8,000円", "accept": ["はっせん"], "explain": "8.000 = はっせん (はち → はっ)."}, {"show": "10,000ドン", "accept": ["いちまん"], "explain": "10.000 = いちまん. Khác 1.000 (せん, không nói いち), 10.000 PHẢI có いち."}, {"show": "15,000ドン", "accept": ["いちまんごせん"], "explain": "15.000 = いちまん ごせん (10.000 + 5.000)."}, {"show": "42,000円", "accept": ["よんまんにせん"], "explain": "42.000 = よんまん にせん (4 vạn + 2 nghìn). 4 đọc よん."}, {"show": "3 つ", "accept": ["みっつ"], "explain": "Đếm 3 cái = みっつ (一つ ひとつ · 二つ ふたつ · 三つ みっつ)."}, {"show": "6 つ", "accept": ["むっつ"], "explain": "Đếm 6 cái = むっつ."}, {"show": "9 つ", "accept": ["ここのつ"], "explain": "Đếm 9 cái = ここのつ."}, {"show": "10 (đếm cái)", "accept": ["とお"], "explain": "Đếm 10 cái = とお (không có つ)."}], "type": "input"}]};
+const $ = (id) => document.getElementById(id);
+const MC = DATA.sections.filter(s => s.type !== "input");
+const TOTAL = DATA.sections.reduce((n, s) => n + s.items.length, 0);
+let st = null, timerId = null;
+
+/* ---------- tiện ích ---------- */
+function shuffled(arr){ const a = arr.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function fmt(sec){ sec = Math.max(0, Math.round(sec)); return String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0"); }
+function kataToHira(s){ return s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60)); }
+
+/* ---------- romaji -> hiragana (cho máy chưa có bàn phím tiếng Nhật) ---------- */
+const ROMA = (() => {
+  const m = {};
+  const rows = {"":"あいうえお",k:"かきくけこ",s:"さしすせそ",t:"たちつてと",n:"なにぬねの",h:"はひふへほ",m:"まみむめも",r:"らりるれろ",g:"がぎぐげご",z:"ざじずぜぞ",d:"だぢづでど",b:"ばびぶべぼ",p:"ぱぴぷぺぽ"};
+  const V = "aiueo";
+  for (const c in rows) for (let i = 0; i < 5; i++) m[c + V[i]] = rows[c][i];
+  Object.assign(m, {ya:"や",yu:"ゆ",yo:"よ",wa:"わ",wo:"を",si:"し",shi:"し",ti:"ち",chi:"ち",tu:"つ",tsu:"つ",hu:"ふ",fu:"ふ",zi:"じ",ji:"じ",
+    sha:"しゃ",shu:"しゅ",sho:"しょ",she:"しぇ",cha:"ちゃ",chu:"ちゅ",cho:"ちょ",che:"ちぇ",ja:"じゃ",ju:"じゅ",jo:"じょ",jya:"じゃ",jyu:"じゅ",jyo:"じょ",
+    tya:"ちゃ",tyu:"ちゅ",tyo:"ちょ",sya:"しゃ",syu:"しゅ",syo:"しょ",zya:"じゃ",zyu:"じゅ",zyo:"じょ",
+    kya:"きゃ",kyu:"きゅ",kyo:"きょ",gya:"ぎゃ",gyu:"ぎゅ",gyo:"ぎょ",nya:"にゃ",nyu:"にゅ",nyo:"にょ",hya:"ひゃ",hyu:"ひゅ",hyo:"ひょ",
+    mya:"みゃ",myu:"みゅ",myo:"みょ",rya:"りゃ",ryu:"りゅ",ryo:"りょ",bya:"びゃ",byu:"びゅ",byo:"びょ",pya:"ぴゃ",pyu:"ぴゅ",pyo:"ぴょ",
+    xtu:"っ",ltu:"っ",xtsu:"っ",xa:"ぁ",xi:"ぃ",xu:"ぅ",xe:"ぇ",xo:"ぉ",xya:"ゃ",xyu:"ゅ",xyo:"ょ"});
+  return m;
+})();
+function romajiToKana(s, final){
+  let out = "", i = 0; const L = s.toLowerCase();
+  while (i < L.length){
+    const ch = L[i];
+    if (!/[a-z'\-]/.test(ch)){ out += s[i]; i++; continue; }
+    if (ch === "-"){ out += "ー"; i++; continue; }
+    if (ch === "'"){ i++; continue; }
+    let hit = false;
+    for (let len = 4; len >= 1; len--){
+      const key = L.substr(i, len);
+      if (key.length === len && ROMA[key]){ out += ROMA[key]; i += len; hit = true; break; }
+    }
+    if (hit) continue;
+    const nx = L[i + 1];
+    if (ch === "n"){
+      if (nx === "n"){ out += "ん"; i += 2; continue; }
+      if (nx && !/[aiueoy']/.test(nx) && /[a-z]/.test(nx)){ out += "ん"; i++; continue; }
+      if (nx === "'"){ out += "ん"; i += 2; continue; }
+      if (nx && !/[a-z]/.test(nx)){ out += "ん"; i++; continue; }
+      if (!nx){ if (final){ out += "ん"; } else { out += "n"; } i++; continue; }
+    }
+    if (nx && nx === ch && /[kstpgzdbhmrfjcw]/.test(ch)){ out += "っ"; i++; continue; }
+    out += s[i]; i++;
+  }
+  return out;
+}
+function normalizeKana(raw){
+  let s = romajiToKana(raw.normalize("NFKC"), true);
+  s = kataToHira(s).replace(/[\s・、,.。_]+/g, "");
+  return s.replace(/(えん|どん)$/, "");
+}
+
+/* ---------- dựng giao diện ---------- */
+$("t-title").textContent = DATA.title; $("t-sub").textContent = DATA.subtitle;
+document.title = DATA.title;
+const nMC = MC.reduce((n, s) => n + s.items.length, 0), nIn = TOTAL - nMC;
+$("rules").innerHTML = [
+  `Làm trong khoảng <b>${DATA.target_minutes} phút</b> (đồng hồ chỉ để tham khảo, không tự nộp).`,
+  `${nMC} câu trắc nghiệm + ${nIn} câu nhập hiragana, mỗi câu 1 điểm — tổng ${TOTAL} điểm.`,
+  "Có thể đổi đáp án trước khi nộp bài.",
+  "Nộp bài xong sẽ thấy điểm, câu đúng / sai và lời giải thích từng câu."].map(t => `<li>${t}</li>`).join("");
+
+function render(){
+  const box = $("qs"); box.innerHTML = ""; let n = 0;
+  DATA.sections.forEach((s, si) => {
+    const h = document.createElement("h2"); h.className = "sec"; h.textContent = s.title; box.appendChild(h);
+    const p = document.createElement("p"); p.className = "hint"; p.textContent = s.hint; box.appendChild(p);
+    s.items.forEach((q, qi) => {
+      n++;
+      const id = si + "-" + qi;
+      const c = document.createElement("div"); c.className = "card q"; c.id = "q-" + id;
+      c.innerHTML = `<div class="head"><span>Câu ${n}</span><span class="mk"></span></div>`;
+      if (s.type === "input"){
+        const row = document.createElement("div"); row.className = "numrow";
+        const show = document.createElement("div"); show.className = "numshow"; show.textContent = q.show;
+        const inp = document.createElement("input"); inp.className = "kana"; inp.type = "text"; inp.id = "in-" + id;
+        inp.setAttribute("lang", "ja"); inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "off");
+        inp.setAttribute("autocorrect", "off"); inp.spellcheck = false; inp.placeholder = "ひらがな";
+        inp.setAttribute("aria-label", "Cách đọc của " + q.show + " bằng hiragana");
+        inp.value = st.ans[id] || "";
+        inp.addEventListener("input", (e) => {
+          if (st.done) return;
+          if (!e.isComposing && /[A-Za-z'\-]/.test(inp.value)){ inp.value = romajiToKana(inp.value, false); }
+          st.ans[id] = inp.value; progress();
+        });
+        row.appendChild(show); row.appendChild(inp); c.appendChild(row);
+        const ex = document.createElement("div"); ex.className = "explain";
+        ex.textContent = "Đáp án: " + q.accept[0] + " — " + q.explain; c.appendChild(ex);
+      } else {
+        const stem = document.createElement("div"); stem.className = "stem"; stem.textContent = q.stem; c.appendChild(stem);
+        const opts = document.createElement("div"); opts.className = "opts"; c.appendChild(opts);
+        st.order[id].forEach((o, i) => {
+          const b = document.createElement("button"); b.className = "opt"; b.type = "button";
+          b.innerHTML = `<span class="k">${"ABCD"[i]}</span><span class="t"></span>`; b.querySelector(".t").textContent = o;
+          b.dataset.v = o;
+          if (st.ans[id] === o) b.classList.add("sel");
+          b.onclick = () => { if (st.done) return; st.ans[id] = o;
+            opts.querySelectorAll(".opt").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); progress(); };
+          opts.appendChild(b);
+        });
+        const ex = document.createElement("div"); ex.className = "explain";
+        ex.textContent = "Đáp án: " + q.answer + " — " + q.explain; c.appendChild(ex);
+      }
+      box.appendChild(c);
+    });
+  });
+  progress();
+}
+function answered(){ return Object.keys(st.ans).filter(k => String(st.ans[k]).trim() !== "").length; }
+function progress(){ $("prog").textContent = answered() + "/" + TOTAL; }
+function tick(){
+  const sec = (Date.now() - st.start) / 1000;
+  $("timer").textContent = "⏱ " + fmt(sec); $("timer").classList.toggle("warn", sec > DATA.target_minutes * 60);
+}
+function begin(){
+  const order = {};
+  DATA.sections.forEach((s, si) => { if (s.type !== "input") s.items.forEach((q, qi) => order[si + "-" + qi] = shuffled(q.options)); });
+  st = {name: $("name").value.trim(), start: Date.now(), order, ans: {}, done: false};
+  $("start").classList.add("hidden"); $("result").classList.add("hidden"); $("exam").classList.remove("hidden");
+  document.querySelector(".bar").classList.remove("hidden");
+  render(); tick(); clearInterval(timerId); timerId = setInterval(tick, 1000); window.scrollTo(0, 0);
+}
+function askSubmit(){
+  const left = TOTAL - answered();
+  $("m-text").textContent = left ? `Em còn ${left} câu chưa làm. Vẫn nộp bài?` : "Em chắc chắn muốn nộp bài?";
+  $("modal").classList.add("on");
+}
+function isRight(s, q, id){
+  if (s.type === "input") return q.accept.includes(normalizeKana(st.ans[id] || ""));
+  return st.ans[id] === q.answer;
+}
+function finish(){
+  clearInterval(timerId); $("modal").classList.remove("on");
+  st.done = true; st.end = Date.now();
+  let ok = 0; const per = []; const wrong = []; let n = 0;
+  DATA.sections.forEach((s, si) => {
+    const r = {ok: 0, n: s.items.length}; per.push(r);
+    s.items.forEach((q, qi) => {
+      n++; const id = si + "-" + qi, right = isRight(s, q, id), c = $("q-" + id);
+      if (right){ ok++; r.ok++; } else wrong.push(n);
+      c.querySelector(".mk").innerHTML = right ? '<span class="mark ok">✓ Đúng</span>' : `<span class="mark no">✗ ${String(st.ans[id] || "").trim() ? "Sai" : "Bỏ trống"}</span>`;
+      if (s.type === "input"){ const inp = c.querySelector("input"); inp.readOnly = true; inp.classList.add(right ? "right" : "wrong"); }
+      else c.querySelectorAll(".opt").forEach(b => {
+        if (b.dataset.v === q.answer) b.classList.add("right");
+        else if (b.classList.contains("sel")) b.classList.add("wrong");
+      });
+    });
+  });
+  document.querySelectorAll(".q").forEach(c => c.classList.add("done"));
+  document.querySelector(".bar").classList.add("hidden");
+  const secs = Math.round((st.end - st.start) / 1000), pct = Math.round(ok * 100 / TOTAL);
+  $("r-who").textContent = (st.name ? st.name + " · " : "") + "làm trong " + fmt(secs);
+  $("r-score").textContent = ok + " / " + TOTAL + " điểm (" + pct + "%)";
+  $("r-detail").textContent = wrong.length ? "Câu sai / bỏ trống: " + wrong.join(", ") + ". Xem lời giải thích bên dưới." : "Xuất sắc! Em đúng tất cả.";
+  $("r-table").innerHTML = "<tr><th>Phần</th><th>Đúng</th></tr>" + DATA.sections.map((s, i) => `<tr><td></td><td>${per[i].ok}/${per[i].n}</td></tr>`).join("");
+  $("r-table").querySelectorAll("tr").forEach((tr, i) => { if (i > 0) tr.firstChild.textContent = DATA.sections[i - 1].title; });
+  st.summary = DATA.title + (st.name ? " — " + st.name : "") + "\nĐiểm: " + ok + "/" + TOTAL + " (" + pct + "%) · thời gian " + fmt(secs) + "\n" +
+    DATA.sections.map((s, i) => s.title + ": " + per[i].ok + "/" + per[i].n).join("\n") + (wrong.length ? "\nCâu sai: " + wrong.join(", ") : "");
+  $("result").classList.remove("hidden");
+  document.querySelector(".wrap").insertBefore($("result"), $("exam"));
+  window.scrollTo(0, 0);
+}
+$("go").onclick = begin;
+$("submit").onclick = askSubmit;
+$("m-ok").onclick = finish;
+$("m-cancel").onclick = () => $("modal").classList.remove("on");
+$("review").onclick = () => $("qs").scrollIntoView({behavior: "smooth"});
+$("again").onclick = () => { $("copybox").classList.add("hidden"); begin(); };
+$("copy").onclick = () => {
+  const box = $("copybox"); box.value = st.summary; box.classList.remove("hidden"); box.select();
+  try { if (navigator.clipboard) navigator.clipboard.writeText(st.summary).catch(() => {}); } catch (e) {}
+  try { document.execCommand("copy"); } catch (e) {}
+};
+</script>
+</body>
+</html>
